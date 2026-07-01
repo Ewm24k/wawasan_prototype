@@ -96,6 +96,17 @@
 
   <!-- ============ HERO ============ -->
   <section class="hero" id="top">
+    <!-- Auto-sliding background photos, crossfaded by landing.js.
+         Edit the HERO_SLIDES array in assets/js/landing.js to swap
+         images or add/remove slides. -->
+    <div class="hero__bg" id="heroBg" aria-hidden="true">
+      <div class="hero__bg-slide is-active" style="background-image:url('assets/images/hero/hero-1.jpg')"></div>
+      <div class="hero__bg-slide" style="background-image:url('assets/images/hero/hero-2.jpg')"></div>
+      <div class="hero__bg-slide" style="background-image:url('assets/images/hero/hero-3.jpg')"></div>
+      <div class="hero__bg-slide" style="background-image:url('assets/images/hero/hero-4.jpg')"></div>
+    </div>
+    <div class="hero__overlay" aria-hidden="true"></div>
+
     <div class="hero__watermark" aria-hidden="true">
       <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">
         <path d="M20 20 L70 90 L100 40 L150 20 L100 130 L70 150 L20 20Z" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.10"/>
@@ -136,6 +147,37 @@
         perubahan sebenar kepada masyarakat Sabak Bernam — daripada bandar ke kampung,
         daripada belia ke warga emas.
       </p>
+
+      <div class="download-apps">
+        <p class="download-apps__label">Muat turun aplikasi kami</p>
+        <div class="download-apps__buttons">
+          <a class="app-btn" href="#" aria-label="Muat turun aplikasi untuk Android — akan datang">
+            <span class="app-btn__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="6" y="2" width="12" height="20" rx="2.4" stroke="currentColor" stroke-width="1.7"/>
+                <line x1="9.5" y1="18.3" x2="14.5" y2="18.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span class="app-btn__text">
+              <small>Download for</small>
+              <strong>Android</strong>
+            </span>
+          </a>
+          <a class="app-btn app-btn--ios" href="#" aria-label="Muat turun aplikasi untuk iOS — akan datang">
+            <span class="app-btn__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="6" y="2" width="12" height="20" rx="2.4" stroke="currentColor" stroke-width="1.7"/>
+                <line x1="9.5" y1="18.3" x2="14.5" y2="18.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span class="app-btn__text">
+              <small>Download for</small>
+              <strong>iOS</strong>
+            </span>
+          </a>
+        </div>
+        <p class="download-apps__note">*Pautan placeholder — akan dikemaskini apabila aplikasi dilancarkan.</p>
+      </div>
     </div>
   </section>
 
