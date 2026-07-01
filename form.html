@@ -18,34 +18,17 @@
 <!-- ============ HEADER + CAROUSEL ============ -->
 <header class="form-header">
   <div class="mini-topbar">
-    <a class="mini-brand" href="landing.html">
+    <a class="mini-brand" href="landing.html" id="miniBrand">
       <img src="assets/images/logo.jpg" alt="Logo Parti Wawasan Negara">
       <span>WAWASAN NEGARA</span>
     </a>
-    <a class="mini-back" href="landing.html">&larr; Kembali ke Laman Utama</a>
+    <a class="mini-back" href="landing.html" id="miniBack">&larr; Kembali ke Laman Utama</a>
   </div>
 
   <div class="carousel" id="carousel" aria-roledescription="carousel" aria-label="Perjuangan Parti Wawasan Negara">
-    <ul class="carousel__track" id="carouselTrack">
-      <li class="carousel__slide slide--a">
-        <div class="carousel__text">
-          <span>SERTAI PERJUANGAN KAMI</span>
-          <p>Jadi sebahagian daripada suara rakyat Sabak Bernam</p>
-        </div>
-      </li>
-      <li class="carousel__slide slide--b">
-        <div class="carousel__text">
-          <span>BERSAMA MEMBINA SABAK BERNAM</span>
-          <p>Pembangunan yang saksama untuk semua mukim</p>
-        </div>
-      </li>
-      <li class="carousel__slide slide--c">
-        <div class="carousel__text">
-          <span>SUARA RAKYAT, PILIHAN RAKYAT</span>
-          <p>Daftar hari ini dan sertai gerakan perubahan</p>
-        </div>
-      </li>
-    </ul>
+    <!-- Slides are built by form.js from the CAROUSEL_SLIDES array (assets/js/form.js).
+         Supports 4-6 images out of the box — just add/remove entries in that array. -->
+    <ul class="carousel__track" id="carouselTrack"></ul>
 
     <button class="carousel__nav carousel__nav--prev" id="carouselPrev" aria-label="Slaid sebelum">&#10094;</button>
     <button class="carousel__nav carousel__nav--next" id="carouselNext" aria-label="Slaid seterusnya">&#10095;</button>
@@ -53,6 +36,25 @@
     <div class="carousel__dots" id="carouselDots"></div>
   </div>
 </header>
+
+<!-- ============ TESTIMONI AJK & AHLI ============ -->
+<section class="testimoni" aria-label="Testimoni Ahli dan AJK">
+  <div class="testimoni__inner">
+    <p class="testimoni__eyebrow">SUARA AHLI &amp; AJK</p>
+    <h2 class="testimoni__title">Apa Kata Mereka</h2>
+
+    <div class="testimoni-carousel" id="testimoniCarousel" aria-roledescription="carousel" aria-label="Testimoni ahli dan AJK">
+      <!-- Cards built by form.js from the TESTIMONI array — edit
+           that array to change names, roles, photos, or quotes. -->
+      <ul class="testimoni-track" id="testimoniTrack"></ul>
+
+      <button class="testimoni-nav testimoni-nav--prev" id="testimoniPrev" aria-label="Testimoni sebelum">&#10094;</button>
+      <button class="testimoni-nav testimoni-nav--next" id="testimoniNext" aria-label="Testimoni seterusnya">&#10095;</button>
+    </div>
+
+    <div class="testimoni-dots" id="testimoniDots"></div>
+  </div>
+</section>
 
 <!-- ============ FORM ============ -->
 <main id="formMain" class="form-main">
