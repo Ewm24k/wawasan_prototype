@@ -150,15 +150,15 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: 0.08em;
 }
 
-.primary-nav {
+.primary-nav--desktop {
   display: flex;
   align-items: center;
   gap: 28px;
   font-weight: 600;
   font-size: 0.94rem;
 }
-.primary-nav a { color: var(--ink); position: relative; }
-.primary-nav a:not(.nav-cta):hover { color: var(--red); }
+.primary-nav--desktop a { color: var(--ink); position: relative; }
+.primary-nav--desktop a:not(.nav-cta):hover { color: var(--red); }
 .nav-cta {
   background: var(--navy);
   color: var(--white);
@@ -171,22 +171,30 @@ a { color: inherit; text-decoration: none; }
 
 .nav-toggle {
   display: none;
+  position: relative;
+  z-index: 210; /* above .nav-overlay (200) so it stays clickable to close */
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: 5px;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   background: none;
   border: none;
   cursor: pointer;
 }
 .nav-toggle span {
   display: block;
+  width: 22px;
   height: 2px;
   background: var(--navy-dark);
   border-radius: 2px;
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  transition: transform 0.25s ease, opacity 0.25s ease, background 0.25s ease;
 }
+/* Once the overlay is open, the header sits underneath it —
+   recolor the bars to white so the (now X-shaped) icon stays
+   visible against the dark overlay. */
+.nav-toggle[aria-expanded="true"] span { background: var(--white); }
 
 /* ============ HERO ============ */
 .hero {
@@ -423,43 +431,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 @media (max-width: 720px) {
-  .nav-toggle { display: flex; z-index: 101; position: relative; }
-
-  .primary-nav {
-    position: fixed;
-    inset: 0;
-    background: rgba(7, 27, 61, 0.97);
-    backdrop-filter: blur(10px);
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 28px 24px;
-    gap: 26px;
-    font-size: 1.2rem;
-    /* Hidden via opacity/visibility only — never translated off-canvas,
-       so it can't be revealed by horizontal swipe/scroll. */
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: scale(0.97);
-    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
-  }
-  .primary-nav.is-open {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: scale(1);
-    transition: opacity 0.25s ease, transform 0.25s ease;
-  }
-
-  .primary-nav a { color: var(--white); font-weight: 600; }
-  .primary-nav a:not(.nav-cta):hover { color: var(--gold); }
-  .nav-cta { width: 100%; max-width: 260px; text-align: center; background: var(--white); color: var(--red-dark); }
-  .nav-cta:hover { background: var(--gold); color: var(--white); }
-
-  .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-  .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-  .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-toggle { display: flex; }
+  .primary-nav--desktop { display: none; }
 
   .hero__watermark { display: none; }
   .hero__actions .btn { width: 100%; text-align: center; }
@@ -469,16 +442,105 @@ a { color: inherit; text-decoration: none; }
   .footer-inner { grid-template-columns: 1fr; text-align: left; }
 }
 
+/* ============ MOBILE NAV OVERLAY ============
+   Lives at body level (see landing.html) — never nested inside
+   the position:sticky header. Nesting a position:fixed element
+   inside a position:sticky ancestor is a documented iOS Safari
+   bug that makes it flicker or disappear mid-scroll; keeping this
+   as a sibling avoids that class of bug entirely.
+   Positioned with inset:0 rather than height:100vh, since vh units
+   misbehave on iOS Safari when the address bar shows/hides —
+   inset tracks the real fixed-position viewport instead. */
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200; /* above .site-header (100); below .nav-toggle (210) */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(7, 27, 61, 0.97);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overscroll-behavior: contain;
+  padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
+           max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: scale(0.97);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
+}
+.nav-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: scale(1);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.nav-overlay__close {
+  position: absolute;
+  top: max(16px, env(safe-area-inset-top));
+  right: max(16px, env(safe-area-inset-right));
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+.nav-overlay__close:hover { background: rgba(255, 255, 255, 0.22); }
+
+.nav-overlay__nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  font-size: 1.2rem;
+}
+.nav-overlay__nav a { color: var(--white); font-weight: 600; }
+.nav-overlay__nav a:not(.nav-cta):hover,
+.nav-overlay__nav a:not(.nav-cta):focus-visible { color: var(--gold); }
+.nav-overlay__nav .nav-cta {
+  width: 100%;
+  max-width: 260px;
+  text-align: center;
+  background: var(--white);
+  color: var(--red-dark);
+}
+.nav-overlay__nav .nav-cta:hover { background: var(--gold); color: var(--white); }
+
+.nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Only show the overlay markup at all below the desktop breakpoint —
+   keeps it fully out of the accessibility tree and layout on desktop. */
+@media (min-width: 721px) {
+  .nav-overlay { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-overlay { transition: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .btn, .pillar-card, .primary-nav { transition: none; }
+  .btn, .pillar-card, .primary-nav--desktop, .nav-overlay { transition: none; }
 }
 
 /* ============ FORM POPUP MODAL ============ */
 .form-modal {
   position: fixed;
   inset: 0;
-  z-index: 200;
+  z-index: 300;
   display: flex;
   align-items: center;
   justify-content: center;
