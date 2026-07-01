@@ -63,11 +63,11 @@
       </span>
     </a>
 
-    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav" aria-label="Buka menu">
+    <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="primaryNav" aria-haspopup="dialog" aria-label="Buka menu">
       <span></span><span></span><span></span>
     </button>
 
-    <nav class="primary-nav" id="primaryNav">
+    <nav class="primary-nav primary-nav--desktop" aria-label="Navigasi utama">
       <a href="#tentang">Tentang Kami</a>
       <a href="#perjuangan">Perjuangan</a>
       <a href="#berita">Berita</a>
@@ -76,6 +76,21 @@
     </nav>
   </div>
 </header>
+
+<!-- Mobile menu overlay — deliberately placed OUTSIDE the sticky
+     header. A position:fixed element nested inside a position:sticky
+     ancestor is a documented iOS Safari bug (flickers / disappears
+     mid-scroll). Living at body level avoids that entirely. -->
+<div class="nav-overlay" id="primaryNav" role="dialog" aria-modal="true" aria-label="Menu utama" aria-hidden="true">
+  <button class="nav-overlay__close" id="navOverlayClose" type="button" aria-label="Tutup menu">&times;</button>
+  <nav class="nav-overlay__nav" aria-label="Navigasi mudah alih">
+    <a href="#tentang">Tentang Kami</a>
+    <a href="#perjuangan">Perjuangan</a>
+    <a href="#berita">Berita</a>
+    <a href="#hubungi">Hubungi</a>
+    <a class="nav-cta" href="form.html">Sertai Kami</a>
+  </nav>
+</div>
 
 <main id="main">
 
