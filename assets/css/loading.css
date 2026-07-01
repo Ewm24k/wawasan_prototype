@@ -1,0 +1,122 @@
+/* ============================================================
+   Parti Wawasan Negara — Loading Page
+   White background, black typewriter animation, moderate text.
+   ============================================================ */
+
+:root {
+  --navy: #0a2a5e;
+  --red: #d3060d;
+  --ink: #111214;
+  --white: #ffffff;
+  --muted: #9aa0a8;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--white);
+  color: var(--ink);
+  font-family: 'Space Mono', 'Courier New', monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  min-height: 100vh;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.loader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  transition: opacity 0.45s ease;
+}
+
+.loader.is-leaving {
+  opacity: 0;
+}
+
+.loader__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(18px, 4vw, 28px);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+.loader__logo {
+  width: clamp(84px, 20vw, 128px);
+  height: auto;
+  display: block;
+  animation: logoIn 0.7s ease both;
+}
+
+@keyframes logoIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.loader__textbox {
+  min-height: 2.6em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0 8px;
+}
+
+.loader__text {
+  font-size: clamp(0.82rem, 3.1vw, 1.05rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.loader__cursor {
+  font-size: clamp(0.82rem, 3.1vw, 1.05rem);
+  font-weight: 700;
+  color: var(--red);
+  margin-left: 2px;
+  animation: blink 0.9s steps(1) infinite;
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.loader__bar {
+  width: min(220px, 60vw);
+  height: 3px;
+  background: #eceef1;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.loader__bar-fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--navy), var(--red));
+  border-radius: 2px;
+  transition: width 7s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader__logo { animation: none; }
+  .loader__cursor { animation: none; opacity: 1; }
+  .loader__bar-fill { transition: width 0.3s linear; }
+}
