@@ -67,7 +67,10 @@
   function goToLanding() {
     loaderEl.classList.add('is-leaving');
     setTimeout(function () {
-      window.location.href = 'landing.html';
+      // One-time URL parameter — landing.html strips it immediately
+      // after reading it, so a later refresh has no parameter and
+      // correctly bounces back through the loader.
+      window.location.href = 'landing.html?entered=1';
     }, 320);
   }
 
