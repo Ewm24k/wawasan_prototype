@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sertai Kami — Parti Wawasan Negara, Sabak Bernam</title>
+<meta name="description" content="Borang pendaftaran ahli / penyokong Parti Wawasan Negara, Sabak Bernam.">
+<link rel="icon" type="image/jpeg" href="assets/images/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/form.css">
+</head>
+<body>
+
+<a class="skip-link" href="#formMain">Langkau ke borang</a>
+
+<!-- ============ HEADER + CAROUSEL ============ -->
+<header class="form-header">
+  <div class="mini-topbar">
+    <a class="mini-brand" href="landing.html">
+      <img src="assets/images/logo.jpg" alt="Logo Parti Wawasan Negara">
+      <span>WAWASAN NEGARA</span>
+    </a>
+    <a class="mini-back" href="landing.html">&larr; Kembali ke Laman Utama</a>
+  </div>
+
+  <div class="carousel" id="carousel" aria-roledescription="carousel" aria-label="Perjuangan Parti Wawasan Negara">
+    <ul class="carousel__track" id="carouselTrack">
+      <li class="carousel__slide slide--a">
+        <div class="carousel__text">
+          <span>SERTAI PERJUANGAN KAMI</span>
+          <p>Jadi sebahagian daripada suara rakyat Sabak Bernam</p>
+        </div>
+      </li>
+      <li class="carousel__slide slide--b">
+        <div class="carousel__text">
+          <span>BERSAMA MEMBINA SABAK BERNAM</span>
+          <p>Pembangunan yang saksama untuk semua mukim</p>
+        </div>
+      </li>
+      <li class="carousel__slide slide--c">
+        <div class="carousel__text">
+          <span>SUARA RAKYAT, PILIHAN RAKYAT</span>
+          <p>Daftar hari ini dan sertai gerakan perubahan</p>
+        </div>
+      </li>
+    </ul>
+
+    <button class="carousel__nav carousel__nav--prev" id="carouselPrev" aria-label="Slaid sebelum">&#10094;</button>
+    <button class="carousel__nav carousel__nav--next" id="carouselNext" aria-label="Slaid seterusnya">&#10095;</button>
+
+    <div class="carousel__dots" id="carouselDots"></div>
+  </div>
+</header>
+
+<!-- ============ FORM ============ -->
+<main id="formMain" class="form-main">
+  <div class="form-card">
+    <p class="eyebrow">BORANG PENDAFTARAN</p>
+    <h1>Sertai Parti Wawasan Negara</h1>
+    <p class="form-intro">
+      Isikan maklumat di bawah untuk mendaftar sebagai ahli atau penyokong.
+      Templat ini akan dikemaskini kemudian.
+    </p>
+
+    <form id="joinForm" novalidate>
+      <div class="form-grid">
+        <div class="field">
+          <label for="fullName">Nama Penuh</label>
+          <input type="text" id="fullName" name="fullName" autocomplete="name" required>
+        </div>
+
+        <div class="field">
+          <label for="icNumber">No. Kad Pengenalan</label>
+          <input type="text" id="icNumber" name="icNumber" inputmode="numeric" placeholder="e.g. 900101-10-1234" required>
+        </div>
+
+        <div class="field">
+          <label for="phone">No. Telefon</label>
+          <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="012-345 6789" required>
+        </div>
+
+        <div class="field">
+          <label for="email">E-mel</label>
+          <input type="email" id="email" name="email" autocomplete="email" placeholder="nama@email.com">
+        </div>
+
+        <div class="field field--full">
+          <label for="address">Alamat</label>
+          <input type="text" id="address" name="address" autocomplete="street-address" placeholder="Alamat penuh">
+        </div>
+
+        <div class="field">
+          <label for="mukim">Mukim / Kawasan</label>
+          <select id="mukim" name="mukim">
+            <option value="">Pilih kawasan</option>
+            <option>Sungai Besar</option>
+            <option>Sabak</option>
+            <option>Sungai Panjang</option>
+            <option>Sekinchan</option>
+            <option>Lain-lain</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="joinAs">Ingin Mendaftar Sebagai</label>
+          <select id="joinAs" name="joinAs">
+            <option value="ahli">Ahli</option>
+            <option value="penyokong">Penyokong</option>
+            <option value="sukarelawan">Sukarelawan</option>
+          </select>
+        </div>
+
+        <div class="field field--full">
+          <label for="message">Mesej / Catatan (pilihan)</label>
+          <textarea id="message" name="message" rows="4" placeholder="Sebarang maklumat tambahan"></textarea>
+        </div>
+      </div>
+
+      <label class="checkbox-row">
+        <input type="checkbox" id="consent" name="consent" required>
+        <span>Saya bersetuju maklumat ini digunakan untuk tujuan pendaftaran parti.</span>
+      </label>
+
+      <button type="submit" class="btn-submit">Hantar Borang</button>
+
+      <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="form-footer">
+  <div class="form-footer__inner">
+    <img src="assets/images/logo.jpg" alt="Logo Parti Wawasan Negara">
+    <p>&copy; 2026 Parti Wawasan Negara, Sabak Bernam. Hak cipta terpelihara.</p>
+    <a href="landing.html">Kembali ke Laman Utama</a>
+  </div>
+</footer>
+
+<script src="assets/js/form.js"></script>
+</body>
+</html>
