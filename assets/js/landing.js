@@ -151,6 +151,26 @@
     }, { passive: true });
   }
 
+  /* ---------- Hero background carousel ----------
+     Crossfades between the .hero__bg-slide layers. The dark navy
+     .hero__overlay sits on top of every slide, so the look stays
+     the same regardless of which photo is showing. */
+  var heroBg = document.getElementById('heroBg');
+  if (heroBg) {
+    var heroSlides = heroBg.querySelectorAll('.hero__bg-slide');
+    var heroIndex = 0;
+    var heroReduceMotion = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (heroSlides.length > 1 && !heroReduceMotion) {
+      setInterval(function () {
+        heroSlides[heroIndex].classList.remove('is-active');
+        heroIndex = (heroIndex + 1) % heroSlides.length;
+        heroSlides[heroIndex].classList.add('is-active');
+      }, 5500);
+    }
+  }
+
   /* ---------- Form popup modal ---------- */
   var modal = document.getElementById('formModal');
   var modalBackdrop = document.getElementById('formModalBackdrop');
