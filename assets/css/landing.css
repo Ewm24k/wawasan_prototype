@@ -199,14 +199,44 @@ a { color: inherit; text-decoration: none; }
 /* ============ HERO ============ */
 .hero {
   position: relative;
-  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-dark) 100%);
+  background: var(--navy-dark); /* fallback while images load */
   color: var(--white);
   overflow: hidden;
   padding-top: clamp(64px, 12vw, 110px);
   padding-bottom: clamp(90px, 14vw, 140px);
 }
+
+/* Auto-sliding background photos — crossfaded by landing.js.
+   Sits behind everything else in the hero. */
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hero__bg-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+.hero__bg-slide.is-active { opacity: 1; }
+
+/* Same dark navy tint as before, now living on its own layer so
+   it applies evenly on top of whichever photo is showing. This is
+   what keeps the "current black dark blue" look intact. */
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(160deg, rgba(10,42,94,0.90) 0%, rgba(7,27,61,0.94) 65%, rgba(7,27,61,0.88) 100%);
+  pointer-events: none;
+}
+
 .hero__watermark {
   position: absolute;
+  z-index: 2;
   right: -40px;
   top: 10%;
   width: 46vw;
@@ -215,6 +245,7 @@ a { color: inherit; text-decoration: none; }
 }
 .hero__inner {
   position: relative;
+  z-index: 2;
   max-width: var(--container);
   margin: 0 auto;
   padding: 0 24px;
@@ -239,6 +270,7 @@ a { color: inherit; text-decoration: none; }
 
 .hero__sweep {
   position: absolute;
+  z-index: 2;
   left: 0;
   right: 0;
   bottom: -1px;
@@ -246,9 +278,61 @@ a { color: inherit; text-decoration: none; }
 }
 .hero__sweep svg { width: 100%; height: clamp(46px, 9vw, 100px); display: block; }
 
+@media (prefers-reduced-motion: reduce) {
+  .hero__bg-slide { transition: none; }
+}
+
 /* ============ ABOUT ============ */
 .about .section-inner { text-align: center; }
 .about .section-lead { margin: 0 auto; }
+
+/* ============ DOWNLOAD APPS ============ */
+.download-apps {
+  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.download-apps__label {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0;
+}
+.download-apps__buttons {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.app-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 20px;
+  border-radius: 12px;
+  background: var(--navy-dark);
+  color: var(--white);
+  border: 1px solid var(--navy-dark);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+.app-btn:hover { transform: translateY(-2px); background: var(--navy); }
+.app-btn--ios { background: var(--ink); border-color: var(--ink); }
+.app-btn--ios:hover { background: #2a2c30; }
+.app-btn__icon { display: flex; width: 22px; height: 22px; color: var(--white); }
+.app-btn__icon svg { width: 100%; height: 100%; }
+.app-btn__text { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
+.app-btn__text small { font-size: 0.66rem; color: rgba(255,255,255,0.7); }
+.app-btn__text strong { font-family: var(--display); font-size: 1rem; letter-spacing: 0.02em; }
+
+.download-apps__note {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
 
 /* ============ PILLARS ============ */
 .pillar-grid {
@@ -582,14 +666,14 @@ a { color: inherit; text-decoration: none; }
 
 .form-modal__close {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: max(18px, calc(env(safe-area-inset-top) + 14px));
+  right: max(14px, calc(env(safe-area-inset-right) + 10px));
   z-index: 2;
   width: 36px;
   height: 36px;
   border-radius: 50%;
   border: none;
-  background: rgba(7, 27, 61, 0.55);
+  background: rgba(7, 27, 61, 0.6);
   color: var(--white);
   font-size: 1.3rem;
   line-height: 1;
@@ -612,11 +696,19 @@ a { color: inherit; text-decoration: none; }
   .form-modal { padding: 0; }
   .form-modal__panel {
     max-width: 100%;
-    max-height: 100vh;
-    height: 100vh;
+    /* Match the parent .form-modal's own box (which is safely
+       positioned with inset:0) instead of 100vh. On mobile, 100vh
+       can be taller than the actually-visible viewport whenever
+       the browser's address bar is showing, which pushed this
+       panel — and the close button pinned to its top edge —
+       up above the visible area. height:100% avoids that
+       mismatch entirely. */
+    max-height: 100%;
+    height: 100%;
     border-radius: 0;
+    padding-top: env(safe-area-inset-top);
   }
-  .form-modal__iframe { height: 100vh; }
+  .form-modal__iframe { height: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
