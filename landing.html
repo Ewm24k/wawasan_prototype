@@ -13,18 +13,29 @@
 <script>
   /* Loader gate — runs before paint. Every direct load or refresh
      of this page must pass through index.html (the loading page)
-     first. Only a fresh redirect from index.html carries the
-     one-time token below; it is consumed immediately. */
+     first.
+
+     Uses a one-time URL parameter (?entered=1) instead of
+     sessionStorage — storage is unreliable in some mobile/in-app
+     browsers (WhatsApp, Facebook, private mode) and that caused
+     the loader to loop forever. A URL parameter always works and
+     can never loop: if it's present we strip it and continue; if
+     it's absent we redirect once to the loader. There is no path
+     that redirects a second time. */
   (function () {
     try {
-      var token = sessionStorage.getItem('wawasanLoaderPassed');
-      if (token) {
-        sessionStorage.removeItem('wawasanLoaderPassed');
+      var params = new URLSearchParams(window.location.search);
+      if (params.get('entered') === '1') {
+        params.delete('entered');
+        var rest = params.toString();
+        var cleanUrl = window.location.pathname + (rest ? '?' + rest : '') + window.location.hash;
+        window.history.replaceState(null, '', cleanUrl);
       } else {
         window.location.replace('index.html');
       }
     } catch (e) {
-      /* sessionStorage unavailable — let the page load normally */
+      /* If anything above throws, fail OPEN — just show the page
+         rather than risk a redirect loop. */
     }
   })();
 </script>
