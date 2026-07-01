@@ -10,10 +10,37 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/landing.css">
+<script>
+  /* Loader gate — runs before paint. Every direct load or refresh
+     of this page must pass through index.html (the loading page)
+     first. Only a fresh redirect from index.html carries the
+     one-time token below; it is consumed immediately. */
+  (function () {
+    try {
+      var token = sessionStorage.getItem('wawasanLoaderPassed');
+      if (token) {
+        sessionStorage.removeItem('wawasanLoaderPassed');
+      } else {
+        window.location.replace('index.html');
+      }
+    } catch (e) {
+      /* sessionStorage unavailable — let the page load normally */
+    }
+  })();
+</script>
 </head>
 <body>
 
 <a class="skip-link" href="#main">Langkau ke kandungan</a>
+
+<!-- ============ FORM POPUP (appears on load) ============ -->
+<div class="form-modal" id="formModal" aria-hidden="true">
+  <div class="form-modal__backdrop" id="formModalBackdrop"></div>
+  <div class="form-modal__panel" role="dialog" aria-modal="true" aria-label="Borang Pendaftaran Ahli">
+    <button class="form-modal__close" id="formModalClose" aria-label="Tutup borang">&times;</button>
+    <iframe class="form-modal__iframe" id="formModalIframe" src="form.html?modal=1" title="Borang Pendaftaran Ahli"></iframe>
+  </div>
+</div>
 
 <header class="site-header" id="siteHeader">
   <div class="header-inner">
