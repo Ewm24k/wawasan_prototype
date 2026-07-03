@@ -125,9 +125,9 @@
 }
 
 .zv-map__brand--center{
-  top:50%;
+  top:22px;
   left:50%;
-  transform:translate(-50%, -50%);
+  transform:translateX(-50%);
   font-size:.82rem;
   padding:11px 20px;
 }
