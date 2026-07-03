@@ -101,19 +101,14 @@
 
 /* Hide the default Mapbox wordmark; replaced with our own brand badge. */
 .mapboxgl-ctrl-logo{ display:none !important; }
-/* Keep the required attribution text, but shrink/mute it into the corner. */
-.mapboxgl-ctrl-attrib{
-  background:rgba(14,12,11,.45) !important;
-  color:rgba(255,255,255,.55) !important;
-  font-size:10px !important;
-}
-.mapboxgl-ctrl-attrib a{ color:rgba(255,255,255,.65) !important; }
+/* Fully hide the required attribution text/link — covered by our own
+   "T1ERA MAP DATA" chip instead (see .zv-map__attrib-cover below). */
+.mapboxgl-ctrl-attrib{ display:none !important; }
+.mapboxgl-ctrl-bottom-right{ display:none !important; }
 
 .zv-map__brand{
   position:absolute;
-  z-index:2;
-  top:20px;
-  right:20px;
+  z-index:3;
   display:inline-flex;
   align-items:center;
   gap:8px;
@@ -126,6 +121,15 @@
   border:1px solid rgba(255,255,255,.16);
   border-radius:999px;
   padding:8px 14px;
+  pointer-events:none;
+}
+
+.zv-map__brand--center{
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  font-size:.82rem;
+  padding:11px 20px;
 }
 
 .zv-map__brand-dot{
@@ -133,6 +137,22 @@
   background:var(--zv-red);
   box-shadow:0 0 0 3px rgba(211,6,13,.28);
   flex:none;
+}
+
+.zv-map__attrib-cover{
+  position:absolute;
+  z-index:3;
+  right:10px;
+  bottom:10px;
+  font-family:"Space Mono", monospace;
+  font-size:.62rem;
+  letter-spacing:.05em;
+  color:rgba(255,255,255,.55);
+  background:rgba(14,12,11,.6);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:6px;
+  padding:4px 8px;
+  pointer-events:none;
 }
 
 .zv-map__status{
@@ -304,4 +324,5 @@
   .zone-list{ grid-template-columns:1fr; }
   .zv-map{ height:min(88vh, 620px); }
   .zv-map__legend{ left:20px; right:20px; }
+  .zv-map__brand--center{ font-size:.68rem; padding:8px 14px; text-align:center; max-width:80%; }
 }
