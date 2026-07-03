@@ -57,6 +57,11 @@ FUNGSI LOKASI (PENTING — INI MESTI BENAR-BENAR BERLAKU, BUKAN JANJI):
   "location"; kedua-duanya mesti berlaku serentak dalam respons yang sama.
 - Jika tiada tempat berkaitan disebut secara langsung atau melalui konteks, biarkan "location"
   sebagai null.
+- JANGAN sekali-kali nyatakan nombor koordinat (latitud/longitud) sendiri dalam medan "reply" —
+  anda tidak mempunyai akses kepada koordinat sebenar dan sebarang nombor yang anda cipta
+  berkemungkinan salah. Sistem akan menjalankan carian lokasi sebenar dan memaparkan koordinat
+  tepat secara automatik selepas jawapan anda apabila medan "location" diisi. Cukup sebut nama
+  tempat dan maklumat am di dalam "reply"; biarkan sistem yang memberikan angka.
 
 FORMAT OUTPUT (WAJIB):
 Balas HANYA dengan JSON sah, tiada teks lain di luar JSON, dalam bentuk:
