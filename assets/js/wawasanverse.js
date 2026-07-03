@@ -37,7 +37,7 @@
 
   var map = new mapboxgl.Map({
     container: 'zvMap',
-    style: 'mapbox://styles/mapbox/dark-v11',
+    style: 'mapbox://styles/neolingo/cmga9j5xh00bd01qo7uakglxy',
     center: PARLIMEN_CENTER,
     zoom: PARLIMEN_ZOOM,
     attributionControl: true
