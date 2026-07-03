@@ -307,6 +307,31 @@
   </div>
 </footer>
 
+<script>
+  /* Carries the loader's one-time "entered" flag forward onto every
+     internal page link, so clicking around the site (e.g. the
+     WawasanVerse link) doesn't get mistaken for a fresh direct load
+     and bounced back through index.html. External links, anchors,
+     mailto/tel, and index.html itself are left untouched. */
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('a[href]').forEach(function (a) {
+      var href = a.getAttribute('href');
+      if (!href) return;
+      if (/^([a-z]+:)?\/\//i.test(href)) return;
+      if (href.startsWith('mailto:') || href.startsWith('tel:')) return;
+      if (href.startsWith('#')) return;
+      if (href.indexOf('index.html') !== -1) return;
+      if (href.indexOf('.html') === -1) return;
+
+      var hashSplit = href.split('#');
+      var path = hashSplit[0];
+      var hash = hashSplit[1];
+      var url = new URL(path, window.location.href);
+      url.searchParams.set('entered', '1');
+      a.setAttribute('href', url.pathname + url.search + (hash ? '#' + hash : ''));
+    });
+  });
+</script>
 <script src="assets/js/landing.js"></script>
 </body>
 </html>
