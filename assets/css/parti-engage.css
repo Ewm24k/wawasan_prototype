@@ -1,0 +1,162 @@
+/* ============================================================
+   Parti Engage — Member/Volunteer Engagement App
+   Converted from parti-engage-final.jsx (React) to vanilla
+   HTML/CSS/JS to match this site's stack.
+   Colors and layout match the original design exactly.
+   ============================================================ */
+
+:root {
+  --pe-navy: #0F2A5E;
+  --pe-navy-dark: #071A3E;
+  --pe-gold: #C9A84C;
+  --pe-gold-light: #E8C96B;
+  --pe-red: #C0392B;
+  --pe-green: #1D7A4A;
+  --pe-surface: #F7F6F2;
+  --pe-white: #FFFFFF;
+  --pe-border: #E2DDD4;
+  --pe-muted: #8A8278;
+  --pe-text: #1A1612;
+}
+
+* { box-sizing: border-box; }
+html, body { overflow-x: hidden; max-width: 100%; }
+
+body {
+  margin: 0;
+  background: #d9d6cd;
+  color: var(--pe-text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+}
+
+button { font-family: inherit; }
+input, textarea { font-family: inherit; }
+
+/* ============ BACK BAR (matches other wrapped app pages) ============ */
+.app-backbar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  padding-top: max(10px, env(safe-area-inset-top));
+  background: var(--pe-navy-dark);
+  color: #fff;
+  font-size: 13px;
+}
+.app-backbar a {
+  color: #fff;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+}
+.app-backbar a:hover { background: rgba(255,255,255,0.22); }
+.app-backbar span { margin-left: auto; opacity: 0.7; font-size: 11px; }
+
+/* ============ APP SHELL — mirrors the original's centered
+   max-width:400px "phone frame" so it reads as a mobile app
+   even when opened on a desktop browser. ============ */
+.pe-shell {
+  max-width: 400px;
+  margin: 0 auto;
+  background: var(--pe-surface);
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.pe-screen {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 76px;
+}
+
+/* ============ BOTTOM NAV ============ */
+.pe-navbar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 400px;
+  background: var(--pe-white);
+  border-top: 0.5px solid var(--pe-border);
+  display: flex;
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.pe-nav-btn {
+  flex: 1;
+  padding: 8px 4px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--pe-muted);
+  position: relative;
+}
+.pe-nav-btn.is-active { color: var(--pe-navy); }
+.pe-nav-btn.is-active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 2px;
+  background: var(--pe-navy);
+  border-radius: 0 0 2px 2px;
+}
+.pe-nav-btn svg { width: 20px; height: 20px; }
+.pe-nav-btn span { font-size: 9px; }
+.pe-nav-btn.is-active span { font-weight: 500; }
+
+/* ============ SHARED CARD ============ */
+.pe-card {
+  background: var(--pe-white);
+  border: 0.5px solid var(--pe-border);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+/* ============ PROGRESS BAR ============ */
+.pe-pb-track {
+  background: #E2DDD4;
+  border-radius: 3px;
+  height: 6px;
+  overflow: hidden;
+  width: 100%;
+}
+.pe-pb-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+/* ============ AVATAR ============ */
+.pe-av {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pe-pb-fill { transition: none; }
+}
