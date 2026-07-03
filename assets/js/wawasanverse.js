@@ -18,7 +18,7 @@
   // ---- 1. Mapbox access token ---------------------------------------
   // Replace with your own Mapbox public token (starts with "pk.").
   // Get one at https://account.mapbox.com/access-tokens/
-  mapboxgl.accessToken = '';
+  mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN';
 
   // ---- 2. Approximate DUN centroids (placeholder, pending per-PDM data)
   var DUN_CENTROIDS = {
