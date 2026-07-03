@@ -18,7 +18,7 @@
   // ---- 1. Mapbox access token ---------------------------------------
   // Replace with your own Mapbox public token (starts with "pk.").
   // Get one at https://account.mapbox.com/access-tokens/
-  mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN';
+  mapboxgl.accessToken = '';
 
   // ---- 2. Approximate DUN centroids (placeholder, pending per-PDM data)
   var DUN_CENTROIDS = {
@@ -34,7 +34,7 @@
 
   var map = new mapboxgl.Map({
     container: 'zvMap',
-    style: 'mapbox://styles/mapbox/dark-v11',
+    style: 'mapbox://styles/neolingo/cmga9j5xh00bd01qo7uakglxy',
     center: PARLIMEN_CENTER,
     zoom: PARLIMEN_ZOOM,
     attributionControl: true
