@@ -108,22 +108,35 @@
       .addTo(map);
   }
 
+  // Broadcasts the outcome of a location lookup so other scripts (the
+  // T1ERA terminal in particular) can react — e.g. print the real
+  // coordinates under an AI reply — without being merged into this file.
+  function announceLocation(detail) {
+    window.dispatchEvent(new CustomEvent('zv:location-result', { detail: detail }));
+  }
+
   // Fallback when geocoding finds nothing usable.
-  function flyToDunFallback(dunKey, pdmName) {
-    var d = DUN_CENTROIDS[dunKey];
-    if (!d) return;
+  function flyToDunFallback(dunKey, placeName, source) {
+    var d = DUN_CENTROIDS[dunKey] || { center: PARLIMEN_CENTER, name: 'Sabak Bernam', color: '#d3060d', zoom: PARLIMEN_ZOOM };
     map.flyTo({ center: d.center, zoom: d.zoom, speed: 0.9, curve: 1.3, essential: true });
     dropResultMarker(d.center[0], d.center[1], d.color);
     openResultPopup(
-      d.center[0], d.center[1], d.name, pdmName,
-      'Tiada padanan tepat ditemui buat masa ini — peta ditunjukkan pada anggaran pusat DUN.'
+      d.center[0], d.center[1], d.name, placeName,
+      'Tiada padanan tepat ditemui buat masa ini — peta ditunjukkan pada anggaran pusat kawasan.'
     );
+    announceLocation({
+      source: source, name: placeName, matched: false,
+      lng: d.center[0], lat: d.center[1], dun: d.name
+    });
   }
 
-  // ---- 3. Geocode a PDM name and fly to the real result ----------------
-  function geocodeAndFly(pdmName, dunKey, listItem) {
-    var d = DUN_CENTROIDS[dunKey] || { center: PARLIMEN_CENTER, name: '' };
-    var query = encodeURIComponent(pdmName + ', Sabak Bernam, Selangor, Malaysia');
+  // ---- 3. Geocode any place name and fly to the real result ------------
+  // source: 'list' (PDM list click), 'search' (search bar), 'ai' (T1ERA
+  // terminal). Only affects which UI shows a busy state / who gets told.
+  function geocodeAndFly(placeName, dunKey, listItem, source) {
+    source = source || 'list';
+    var d = DUN_CENTROIDS[dunKey] || { center: PARLIMEN_CENTER, name: 'Sabak Bernam', color: '#d3060d' };
+    var query = encodeURIComponent(placeName + ', Sabak Bernam, Selangor, Malaysia');
     var url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + query + '.json'
       + '?access_token=' + encodeURIComponent(mapboxgl.accessToken)
       + '&country=MY'
@@ -132,9 +145,9 @@
       + '&limit=1';
 
     if (listItem) listItem.classList.add('is-searching');
-    showStatus('Mencari "' + pdmName + '"…');
+    showStatus('Mencari "' + placeName + '"…');
 
-    fetch(url)
+    return fetch(url)
       .then(function (res) {
         if (!res.ok) throw new Error('Geocoding request failed: ' + res.status);
         return res.json();
@@ -146,13 +159,17 @@
           var lat = feature.center[1];
           map.flyTo({ center: [lng, lat], zoom: 15.2, speed: 1.1, curve: 1.3, essential: true });
           dropResultMarker(lng, lat, d.color || '#d3060d');
-          openResultPopup(lng, lat, d.name, pdmName, 'Kedudukan dijumpai melalui carian lokasi.');
+          openResultPopup(lng, lat, d.name || '', placeName, 'Kedudukan dijumpai melalui carian lokasi.');
+          announceLocation({
+            source: source, name: feature.place_name || placeName, matched: true,
+            lng: lng, lat: lat, dun: d.name || null
+          });
         } else {
-          flyToDunFallback(dunKey, pdmName);
+          flyToDunFallback(dunKey, placeName, source);
         }
       })
       .catch(function () {
-        flyToDunFallback(dunKey, pdmName);
+        flyToDunFallback(dunKey, placeName, source);
       })
       .finally(function () {
         if (listItem) listItem.classList.remove('is-searching');
@@ -193,18 +210,68 @@
 
       var dunKey = item.getAttribute('data-dun');
       var name = item.querySelector('.zone-list__name').textContent.trim();
-      geocodeAndFly(name, dunKey, item);
+      geocodeAndFly(name, dunKey, item, 'list');
     });
   });
 
-  // ---- 6. Public hook for other scripts (e.g. the T1ERA terminal) ------
+  // ---- 6. Search bar -----------------------------------------------------
+  var searchForm = document.getElementById('zvSearchForm');
+  var searchInput = document.getElementById('zvSearchInput');
+  if (searchForm && searchInput) {
+    searchForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var query = searchInput.value.trim();
+      if (!query) return;
+      zoneItems.forEach(function (i) { i.classList.remove('is-active'); });
+      geocodeAndFly(query, null, null, 'search');
+    });
+  }
+
+  // ---- 7. "Find my location" — real browser geolocation, via Mapbox's
+  //         built-in GeolocateControl (added off-screen in top-right,
+  //         triggered programmatically by our own search-bar button so
+  //         it matches the site's design instead of Mapbox's default UI).
+  var locateBtn = document.getElementById('zvLocateBtn');
+  if (locateBtn && navigator.geolocation) {
+    var geolocateControl = new mapboxgl.GeolocateControl({
+      positionOptions: { enableHighAccuracy: true },
+      trackUserLocation: false,
+      showUserHeading: false
+    });
+    map.addControl(geolocateControl, 'top-right');
+    geolocateControl._container.style.display = 'none'; // hidden, triggered via our own button
+
+    geolocateControl.on('geolocate', function (pos) {
+      locateBtn.classList.remove('is-active');
+      var lng = pos.coords.longitude;
+      var lat = pos.coords.latitude;
+      dropResultMarker(lng, lat, '#5ee39a');
+      openResultPopup(lng, lat, '', 'Lokasi anda', 'Kedudukan semasa mengikut GPS peranti anda.');
+      announceLocation({ source: 'geolocate', name: 'Lokasi semasa', matched: true, lng: lng, lat: lat, dun: null });
+    });
+    geolocateControl.on('error', function () {
+      locateBtn.classList.remove('is-active');
+      showStatus('Tidak dapat mengesan lokasi anda. Semak kebenaran lokasi pelayar.');
+      setTimeout(hideStatus, 2600);
+    });
+
+    locateBtn.addEventListener('click', function () {
+      locateBtn.classList.add('is-active');
+      geolocateControl.trigger();
+    });
+  } else if (locateBtn) {
+    locateBtn.disabled = true;
+    locateBtn.title = 'Lokasi tidak disokong pada pelayar ini';
+  }
+
+  // ---- 8. Public hook for other scripts (e.g. the T1ERA terminal) ------
   // Intentionally tiny: one function, no shared state exposed. Lets
   // assets/js/t1era-terminal.js ask the map to fly to a place name
   // without this file and that file being merged together.
   window.T1ERA_MAP = {
     flyToPlace: function (placeName, dunKey) {
       if (!placeName) return;
-      geocodeAndFly(placeName, dunKey || 'dun1', null);
+      geocodeAndFly(placeName, dunKey || null, null, 'ai');
     }
   };
 
