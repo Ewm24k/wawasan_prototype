@@ -31,7 +31,9 @@
         var cleanUrl = window.location.pathname + (rest ? '?' + rest : '') + window.location.hash;
         window.history.replaceState(null, '', cleanUrl);
       } else {
-        window.location.replace('index.html');
+        var here = window.location.pathname.split('/').pop() || 'landing.html';
+        var qs = window.location.search ? window.location.search.replace(/^\?/, '&') : '';
+        window.location.replace('index.html?next=' + encodeURIComponent(here) + qs);
       }
     } catch (e) {
       /* If anything above throws, fail OPEN — just show the page
