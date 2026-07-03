@@ -98,6 +98,73 @@
 
 /* Mapbox default control tweaks to match the dark scrim */
 .mapboxgl-ctrl-top-right{ margin-top:14px; margin-right:14px; }
+
+/* Hide the default Mapbox wordmark; replaced with our own brand badge. */
+.mapboxgl-ctrl-logo{ display:none !important; }
+/* Keep the required attribution text, but shrink/mute it into the corner. */
+.mapboxgl-ctrl-attrib{
+  background:rgba(14,12,11,.45) !important;
+  color:rgba(255,255,255,.55) !important;
+  font-size:10px !important;
+}
+.mapboxgl-ctrl-attrib a{ color:rgba(255,255,255,.65) !important; }
+
+.zv-map__brand{
+  position:absolute;
+  z-index:2;
+  top:20px;
+  right:20px;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-family:"Space Mono", monospace;
+  font-size:.72rem;
+  letter-spacing:.06em;
+  color:#fff;
+  background:rgba(14,12,11,.55);
+  backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:999px;
+  padding:8px 14px;
+}
+
+.zv-map__brand-dot{
+  width:7px; height:7px; border-radius:50%;
+  background:var(--zv-red);
+  box-shadow:0 0 0 3px rgba(211,6,13,.28);
+  flex:none;
+}
+
+.zv-map__status{
+  position:absolute;
+  z-index:2;
+  left:50%;
+  bottom:22px;
+  transform:translateX(-50%);
+  font-family:"Space Mono", monospace;
+  font-size:.72rem;
+  letter-spacing:.03em;
+  color:#fff;
+  background:rgba(14,12,11,.7);
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:999px;
+  padding:9px 16px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.zv-map__status::before{
+  content:"";
+  width:8px; height:8px; border-radius:50%;
+  border:2px solid rgba(255,255,255,.35);
+  border-top-color:#fff;
+  animation:zv-spin .7s linear infinite;
+  flex:none;
+}
+
+@keyframes zv-spin{ to{ transform:rotate(360deg); } }
+
 .zv-popup .mapboxgl-popup-content{
   font-family:"Inter", sans-serif;
   padding:14px 16px;
@@ -197,6 +264,19 @@
 }
 .zone-list__item.is-active .zone-list__index,
 .zone-list__item.is-active .zone-list__name{ color:#fff; }
+
+.zone-list__item.is-searching{ opacity:.55; cursor:wait; }
+.zone-list__item.is-searching .zone-list__name::after{
+  content:"";
+  display:inline-block;
+  width:10px; height:10px;
+  margin-left:8px;
+  border-radius:50%;
+  border:2px solid rgba(20,17,15,.25);
+  border-top-color:var(--zv-red);
+  animation:zv-spin .7s linear infinite;
+  vertical-align:middle;
+}
 
 .zone-list__index{
   font-family:"Space Mono", monospace;
