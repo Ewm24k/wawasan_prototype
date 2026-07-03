@@ -1,4 +1,6 @@
 [build]
+  # Chain your commands using &&
+  command = "sed -i \"s#YOUR_MAPBOX_ACCESS_TOKEN#$MAPBOX_TOKEN#g\" assets/js/wawasanverse.js && npm run build"
   publish = "."
 
 [functions]
