@@ -1,0 +1,786 @@
+
+<h2 class="sr-only">Malaysia Voter Intelligence Platform — a human-in-the-loop social media sentiment tracker with AI scoring, central library, keyword trends, and analyst dashboard</h2>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans,system-ui,sans-serif);background:var(--surface-0,#f5f5f2);color:var(--text-primary,#0b0b0b);font-size:13px}
+.shell{display:flex;height:100vh;min-height:600px;overflow:hidden}
+.sidebar{width:200px;flex-shrink:0;background:var(--surface-2,#fff);border-right:0.5px solid var(--border);display:flex;flex-direction:column}
+.sb-brand{padding:16px;border-bottom:0.5px solid var(--border)}
+.sb-brand-name{font-size:14px;font-weight:500;color:var(--text-primary)}
+.sb-brand-sub{font-size:11px;color:var(--text-muted);margin-top:2px}
+.sb-nav{padding:8px;flex:1}
+.sb-section{font-size:10px;color:var(--text-muted);padding:10px 8px 4px;letter-spacing:.04em;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--radius,8px);cursor:pointer;color:var(--text-secondary);font-size:12px;margin-bottom:1px;border:none;background:none;width:100%;text-align:left}
+.nav-item i{font-size:15px;flex-shrink:0}
+.nav-item:hover{background:var(--surface-1);color:var(--text-primary)}
+.nav-item.active{background:var(--bg-accent,#e6f1fb);color:var(--text-accent,#185fa5);font-weight:500}
+.nav-item .pill{margin-left:auto;background:var(--text-accent,#185fa5);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;font-weight:500}
+.sb-bottom{padding:12px 8px;border-top:0.5px solid var(--border)}
+.sb-user{display:flex;align-items:center;gap:8px;padding:6px 10px}
+.av{display:flex;align-items:center;justify-content:center;font-weight:500;flex-shrink:0;border-radius:50%}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--surface-2,#fff);border-bottom:0.5px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500}
+.chip-live{background:var(--bg-success,#eaf3de);border:0.5px solid var(--border-success,#c0dd97);color:var(--text-success,#27500a)}
+.chip-live-dot{width:6px;height:6px;border-radius:50%;background:var(--text-success,#27500a)}
+.icon-btn{width:30px;height:30px;border-radius:var(--radius);border:0.5px solid var(--border-strong,#ccc);background:var(--surface-1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-secondary)}
+
+.content{flex:1;overflow-y:auto;padding:20px}
+.page{display:none}.page.active{display:block}
+
+.card{background:var(--surface-2,#fff);border:0.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
+.card-head{font-size:13px;font-weight:500;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.card-head i{font-size:15px;color:var(--text-accent,#185fa5)}
+.card-head-right{margin-left:auto;font-size:11px;color:var(--text-accent,#185fa5);cursor:pointer;font-weight:400}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.kpi{background:var(--surface-1,#f5f5f2);border-radius:var(--radius,8px);padding:12px 14px}
+.kpi-label{font-size:11px;color:var(--text-muted);margin-bottom:4px}
+.kpi-val{font-size:22px;font-weight:500;line-height:1}
+.kpi-sub{font-size:11px;margin-top:3px}
+
+.badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:500}
+.b-blue{background:var(--bg-accent,#e6f1fb);color:var(--text-accent,#185fa5)}
+.b-green{background:var(--bg-success,#eaf3de);color:var(--text-success,#27500a)}
+.b-red{background:var(--bg-danger,#fcebeb);color:var(--text-danger,#791f1f)}
+.b-amber{background:#faeeda;color:#633806}
+.b-gray{background:var(--surface-1);color:var(--text-secondary)}
+.b-purple{background:#eeedfe;color:#3c3489}
+
+.sep{height:0.5px;background:var(--border);margin:12px 0}
+
+.form-label{font-size:12px;color:var(--text-secondary);margin-bottom:5px;display:block}
+.form-input{width:100%;padding:8px 10px;border-radius:var(--radius);border:0.5px solid var(--border-strong,#ccc);background:var(--surface-1);color:var(--text-primary);font-size:13px;font-family:inherit;margin-bottom:10px}
+.form-input:focus{outline:none;border-color:var(--border-accent,#b5d4f4)}
+.form-select{width:100%;padding:8px 10px;border-radius:var(--radius);border:0.5px solid var(--border-strong,#ccc);background:var(--surface-1);color:var(--text-primary);font-size:13px;font-family:inherit;margin-bottom:10px;cursor:pointer}
+.form-textarea{width:100%;padding:8px 10px;border-radius:var(--radius);border:0.5px solid var(--border-strong,#ccc);background:var(--surface-1);color:var(--text-primary);font-size:13px;font-family:inherit;margin-bottom:10px;min-height:80px;resize:vertical}
+.btn-primary{padding:9px 18px;border-radius:var(--radius);background:var(--text-accent,#185fa5);color:#fff;border:none;font-size:13px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn-primary:hover{opacity:.9}
+.btn-primary:disabled{opacity:.5;cursor:default}
+.btn-outline{padding:7px 14px;border-radius:var(--radius);background:var(--surface-1);color:var(--text-primary);border:0.5px solid var(--border-strong,#ccc);font-size:12px;cursor:pointer}
+
+.lib-item{border-bottom:0.5px solid var(--border);padding:12px 0}
+.lib-item:last-child{border-bottom:none;padding-bottom:0}
+.lib-item-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px}
+.lib-meta{font-size:11px;color:var(--text-muted)}
+.score-ring{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;border:2px solid}
+.sentiment-bar{display:flex;height:6px;border-radius:3px;overflow:hidden;margin:6px 0}
+.kw-tag{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;background:var(--surface-1);border:0.5px solid var(--border);color:var(--text-secondary);margin:2px}
+.kw-tag.hot{background:var(--bg-danger,#fcebeb);border-color:var(--border-danger,#f7c1c1);color:var(--text-danger,#791f1f)}
+.kw-tag.rising{background:#faeeda;border-color:#fac775;color:#633806}
+.kw-tag.stable{background:var(--bg-accent,#e6f1fb);border-color:var(--border-accent,#b5d4f4);color:var(--text-accent,#185fa5)}
+
+.trend-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.trend-label{font-size:12px;width:120px;flex-shrink:0;color:var(--text-primary)}
+.trend-track{flex:1;height:6px;background:var(--surface-1);border-radius:3px;overflow:hidden}
+.trend-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.trend-val{font-size:12px;font-weight:500;width:36px;text-align:right}
+
+.feed-item{padding:10px 0;border-bottom:0.5px solid var(--border)}
+.feed-item:last-child{border-bottom:none}
+
+.ai-output{background:var(--surface-1);border:0.5px solid var(--border);border-left:3px solid var(--border-accent,#b5d4f4);border-radius:0 var(--radius) var(--radius) 0;padding:12px;font-size:12px;color:var(--text-secondary);line-height:1.7;white-space:pre-wrap;font-family:var(--font-mono,monospace);min-height:60px}
+.ai-thinking{color:var(--text-muted);font-style:italic}
+
+.state-map{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.state-cell{border-radius:6px;padding:8px 6px;text-align:center;cursor:pointer;transition:opacity .15s}
+.state-cell:hover{opacity:.8}
+.state-name{font-size:10px;font-weight:500}
+.state-score{font-size:14px;font-weight:500;margin-top:2px}
+
+.tag-cloud{display:flex;flex-wrap:wrap;gap:6px;padding:8px 0}
+</style>
+
+<div class="shell">
+  <div class="sidebar">
+    <div class="sb-brand">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+        <div style="width:24px;height:24px;border-radius:6px;background:var(--text-accent,#185fa5);display:flex;align-items:center;justify-content:center">
+          <i class="ti ti-radar" style="font-size:13px;color:#fff" aria-hidden="true"></i>
+        </div>
+        <span class="sb-brand-name">PulseMY</span>
+      </div>
+      <div class="sb-brand-sub">Voter intelligence platform</div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-section">Workspace</div>
+      <button class="nav-item active" onclick="gotoPage('submit')"><i class="ti ti-upload" aria-hidden="true"></i>Submit content</button>
+      <button class="nav-item" onclick="gotoPage('library')"><i class="ti ti-database" aria-hidden="true"></i>Central library <span class="pill" id="lib-count">0</span></button>
+      <div class="sb-section">Intelligence</div>
+      <button class="nav-item" onclick="gotoPage('dashboard')"><i class="ti ti-layout-dashboard" aria-hidden="true"></i>Dashboard</button>
+      <button class="nav-item" onclick="gotoPage('keywords')"><i class="ti ti-trending-up" aria-hidden="true"></i>Keyword tracker</button>
+      <button class="nav-item" onclick="gotoPage('briefing')"><i class="ti ti-file-text" aria-hidden="true"></i>AI briefing</button>
+      <div class="sb-section">Config</div>
+      <button class="nav-item" onclick="gotoPage('moderators')"><i class="ti ti-users" aria-hidden="true"></i>Moderators</button>
+    </div>
+    <div class="sb-bottom">
+      <div class="sb-user">
+        <div class="av" style="width:28px;height:28px;background:var(--bg-accent);color:var(--text-accent);font-size:11px">KZ</div>
+        <div>
+          <div style="font-size:12px;font-weight:500">Kairel Z.</div>
+          <div style="font-size:10px;color:var(--text-muted)">Senior analyst</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div style="font-size:14px;font-weight:500" id="topbar-title">Submit content</div>
+        <div style="font-size:11px;color:var(--text-muted)" id="topbar-sub">Add a social post or video for AI scoring</div>
+      </div>
+      <div class="topbar-right">
+        <div class="chip chip-live"><div class="chip-live-dot"></div>AI engine active</div>
+        <div class="icon-btn" title="Refresh"><i class="ti ti-refresh" style="font-size:14px" aria-hidden="true"></i></div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══ SUBMIT PAGE ══════════════════════════════════════════════════ -->
+      <div class="page active" id="page-submit">
+        <div class="grid2" style="align-items:start">
+          <div>
+            <div class="card">
+              <div class="card-head"><i class="ti ti-upload" aria-hidden="true"></i>New submission</div>
+
+              <label class="form-label">Platform</label>
+              <select class="form-select" id="s-platform">
+                <option value="">Select platform...</option>
+                <option>Threads</option><option>Twitter / X</option>
+                <option>Instagram</option><option>TikTok</option>
+                <option>Facebook</option><option>YouTube</option>
+                <option>Reddit</option><option>News portal</option>
+              </select>
+
+              <label class="form-label">Content type</label>
+              <select class="form-select" id="s-type">
+                <option value="">Select type...</option>
+                <option>Post / caption</option><option>Video (transcript)</option>
+                <option>Comment thread</option><option>News article</option>
+                <option>Viral reel / clip</option>
+              </select>
+
+              <label class="form-label">State / region</label>
+              <select class="form-select" id="s-state">
+                <option value="">All Malaysia</option>
+                <option>Selangor</option><option>Kuala Lumpur</option>
+                <option>Johor</option><option>Perak</option>
+                <option>Kedah</option><option>Kelantan</option>
+                <option>Terengganu</option><option>Pahang</option>
+                <option>Negeri Sembilan</option><option>Melaka</option>
+                <option>Sabah</option><option>Sarawak</option>
+                <option>Penang</option><option>Perlis</option>
+                <option>Putrajaya</option><option>Labuan</option>
+              </select>
+
+              <label class="form-label">Topic tags</label>
+              <input class="form-input" id="s-tags" placeholder="e.g. kos hidup, pengangkutan, banjir...">
+
+              <label class="form-label">Content (paste post, transcript, or article text)</label>
+              <textarea class="form-textarea" id="s-content" style="min-height:120px" placeholder="Paste the full post, video transcript, or article excerpt here. Moderator notes are welcome."></textarea>
+
+              <label class="form-label">Source URL (optional)</label>
+              <input class="form-input" id="s-url" placeholder="https://...">
+
+              <label class="form-label">Estimated reach</label>
+              <select class="form-select" id="s-reach">
+                <option>&lt; 1,000 views</option>
+                <option>1,000 – 10,000</option>
+                <option>10,000 – 100,000</option>
+                <option>100,000 – 1M</option>
+                <option>1M+</option>
+              </select>
+
+              <button class="btn-primary" id="submit-btn" onclick="submitContent()">
+                <i class="ti ti-sparkles" aria-hidden="true"></i>Analyse with AI
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <div class="card" id="ai-result-card" style="display:none">
+              <div class="card-head"><i class="ti ti-robot" aria-hidden="true"></i>AI analysis result</div>
+              <div class="ai-output" id="ai-output"></div>
+              <div id="ai-parsed" style="margin-top:12px;display:none">
+                <div class="sep"></div>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                  <div class="score-ring" id="score-ring" style="border-color:#185fa5;color:#185fa5">–</div>
+                  <div>
+                    <div style="font-size:13px;font-weight:500" id="score-label">–</div>
+                    <div style="font-size:11px;color:var(--text-muted)" id="score-sub">–</div>
+                  </div>
+                  <div style="margin-left:auto" id="sentiment-badge"></div>
+                </div>
+                <div class="sentiment-bar" id="sent-bar"></div>
+                <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-bottom:10px">
+                  <span>Positif</span><span>Neutral</span><span>Negatif</span>
+                </div>
+                <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">Topik dikenal pasti</div>
+                <div id="kw-extracted"></div>
+                <div class="sep"></div>
+                <button class="btn-primary" onclick="approveToLibrary()" style="width:100%;justify-content:center">
+                  <i class="ti ti-database" aria-hidden="true"></i>Approve & add to library
+                </button>
+                <button class="btn-outline" onclick="rejectEntry()" style="width:100%;margin-top:6px;justify-content:center;display:flex;align-items:center;gap:6px">
+                  <i class="ti ti-x" aria-hidden="true"></i>Reject
+                </button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><i class="ti ti-bulb" aria-hidden="true"></i>Moderator guide</div>
+              <div style="font-size:12px;color:var(--text-secondary);line-height:1.7">
+                <div style="margin-bottom:8px"><strong style="font-weight:500;color:var(--text-primary)">What to look for</strong></div>
+                <div style="margin-bottom:6px">• Viral posts with high engagement (100k+ views)</div>
+                <div style="margin-bottom:6px">• Comments with strong emotional tone</div>
+                <div style="margin-bottom:6px">• Trending hashtags related to policy or leaders</div>
+                <div style="margin-bottom:6px">• Emerging grievances not yet covered by news</div>
+                <div style="margin-bottom:6px">• Misinformation spreading rapidly</div>
+                <div style="margin-bottom:6px">• Youth sentiment on cost of living, jobs, housing</div>
+                <div class="sep"></div>
+                <div style="margin-bottom:8px"><strong style="font-weight:500;color:var(--text-primary)">Scoring bands</strong></div>
+                <div style="margin-bottom:4px"><span class="badge b-green">80–100</span> Strong positive sentiment</div>
+                <div style="margin-bottom:4px"><span class="badge b-blue">60–79</span> Mild positive / mixed</div>
+                <div style="margin-bottom:4px"><span class="badge b-amber">40–59</span> Neutral / ambiguous</div>
+                <div style="margin-bottom:4px"><span class="badge b-red">0–39</span> Negative / hostile</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ LIBRARY PAGE ════════════════════════════════════════════════ -->
+      <div class="page" id="page-library">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <input class="form-input" style="flex:1;margin:0" placeholder="Search library..." id="lib-search" oninput="filterLib()">
+          <select class="form-select" style="width:140px;margin:0" id="lib-filter-platform" onchange="filterLib()">
+            <option value="">All platforms</option>
+            <option>Threads</option><option>Twitter / X</option>
+            <option>Instagram</option><option>TikTok</option>
+            <option>Facebook</option><option>YouTube</option>
+          </select>
+          <select class="form-select" style="width:140px;margin:0" id="lib-filter-sent" onchange="filterLib()">
+            <option value="">All sentiment</option>
+            <option value="Positif">Positif</option>
+            <option value="Negatif">Negatif</option>
+            <option value="Neutral">Neutral</option>
+          </select>
+        </div>
+
+        <div class="card" id="lib-empty" style="text-align:center;padding:40px;color:var(--text-muted)">
+          <i class="ti ti-database" style="font-size:32px;display:block;margin-bottom:8px" aria-hidden="true"></i>
+          Library is empty. Submit and approve content to populate the intelligence hub.
+        </div>
+        <div id="lib-list"></div>
+      </div>
+
+      <!-- ══ DASHBOARD PAGE ══════════════════════════════════════════════ -->
+      <div class="page" id="page-dashboard">
+        <div class="grid4">
+          <div class="kpi">
+            <div class="kpi-label">Total submissions</div>
+            <div class="kpi-val" id="d-total">0</div>
+            <div class="kpi-sub" style="color:var(--text-muted)">in library</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Avg sentiment score</div>
+            <div class="kpi-val" id="d-avg" style="color:#185fa5">–</div>
+            <div class="kpi-sub" id="d-avg-sub" style="color:var(--text-muted)">out of 100</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Negative alerts</div>
+            <div class="kpi-val" id="d-neg" style="color:#a32d2d">0</div>
+            <div class="kpi-sub" style="color:var(--text-muted)">score &lt; 40</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Top platform</div>
+            <div class="kpi-val" id="d-top-plat" style="font-size:14px">–</div>
+            <div class="kpi-sub" style="color:var(--text-muted)">by submissions</div>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="card">
+            <div class="card-head"><i class="ti ti-map-pin" aria-hidden="true"></i>State sentiment snapshot</div>
+            <div class="state-map" id="state-map"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><i class="ti ti-chart-bar" aria-hidden="true"></i>Sentiment by platform</div>
+            <div style="position:relative;height:180px"><canvas id="platChart" role="img" aria-label="Bar chart of sentiment scores by platform"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><i class="ti ti-trending-up" aria-hidden="true"></i>Top issues by volume</div>
+          <div id="issue-bars"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><i class="ti ti-list" aria-hidden="true"></i>Recent library entries</div>
+          <div id="dash-recent"></div>
+        </div>
+      </div>
+
+      <!-- ══ KEYWORDS PAGE ══════════════════════════════════════════════ -->
+      <div class="page" id="page-keywords">
+        <div class="grid2">
+          <div class="card">
+            <div class="card-head"><i class="ti ti-flame" aria-hidden="true"></i>Hot keywords now</div>
+            <div class="tag-cloud" id="kw-hot"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><i class="ti ti-trending-up" aria-hidden="true"></i>Rising keywords</div>
+            <div class="tag-cloud" id="kw-rising"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><i class="ti ti-tags" aria-hidden="true"></i>All extracted keywords</div>
+          <div class="tag-cloud" id="kw-all"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><i class="ti ti-chart-bar" aria-hidden="true"></i>Keyword frequency</div>
+          <div style="position:relative" id="kw-chart-wrap"><canvas id="kwChart" role="img" aria-label="Horizontal bar chart of keyword frequency"></canvas></div>
+        </div>
+      </div>
+
+      <!-- ══ BRIEFING PAGE ══════════════════════════════════════════════ -->
+      <div class="page" id="page-briefing">
+        <div class="card">
+          <div class="card-head"><i class="ti ti-file-text" aria-hidden="true"></i>AI intelligence briefing
+            <button class="btn-outline" style="margin-left:auto" onclick="generateBriefing()"><i class="ti ti-sparkles" aria-hidden="true"></i> Generate briefing</button>
+          </div>
+          <div id="briefing-empty" style="text-align:center;padding:40px;color:var(--text-muted)">
+            <i class="ti ti-file-text" style="font-size:32px;display:block;margin-bottom:8px" aria-hidden="true"></i>
+            Add at least 3 entries to the library, then generate a briefing.
+          </div>
+          <div class="ai-output" id="briefing-output" style="display:none;font-family:var(--font-sans);font-size:13px;line-height:1.8;border-left-color:var(--border-accent)"></div>
+        </div>
+        <div class="card" id="briefing-meta" style="display:none">
+          <div class="card-head"><i class="ti ti-info-circle" aria-hidden="true"></i>Briefing metadata</div>
+          <div style="font-size:12px;color:var(--text-secondary);line-height:1.8" id="briefing-meta-content"></div>
+        </div>
+      </div>
+
+      <!-- ══ MODERATORS PAGE ══════════════════════════════════════════════ -->
+      <div class="page" id="page-moderators">
+        <div class="grid3">
+          <div class="card" style="text-align:center;padding:20px">
+            <div class="av" style="width:48px;height:48px;background:var(--bg-accent);color:var(--text-accent);font-size:16px;margin:0 auto 10px">AH</div>
+            <div style="font-size:13px;font-weight:500">Ahmad Hafizi</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">West Malaysia lead</div>
+            <div class="badge b-green" style="margin-bottom:8px">Active</div>
+            <div style="font-size:11px;color:var(--text-muted)">Platforms: TikTok, Instagram, FB</div>
+          </div>
+          <div class="card" style="text-align:center;padding:20px">
+            <div class="av" style="width:48px;height:48px;background:#eaf3de;color:#27500a;font-size:16px;margin:0 auto 10px">SR</div>
+            <div style="font-size:13px;font-weight:500">Siti Rahmah</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">East Malaysia lead</div>
+            <div class="badge b-green" style="margin-bottom:8px">Active</div>
+            <div style="font-size:11px;color:var(--text-muted)">Platforms: Threads, Twitter/X</div>
+          </div>
+          <div class="card" style="text-align:center;padding:20px">
+            <div class="av" style="width:48px;height:48px;background:#faeeda;color:#633806;font-size:16px;margin:0 auto 10px">ZM</div>
+            <div style="font-size:13px;font-weight:500">Zaki Mustafa</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px">Youth & TikTok monitor</div>
+            <div class="badge b-amber" style="margin-bottom:8px">On leave</div>
+            <div style="font-size:11px;color:var(--text-muted)">Platforms: TikTok, YouTube</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><i class="ti ti-clock" aria-hidden="true"></i>Submission log</div>
+          <div style="font-size:12px;color:var(--text-muted);text-align:center;padding:20px" id="mod-log">No submissions yet.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const PAGES = {
+  submit:{ title:"Submit content", sub:"Add a social post or video for AI scoring" },
+  library:{ title:"Central library", sub:"All approved AI-scored submissions" },
+  dashboard:{ title:"Intelligence dashboard", sub:"Aggregate voter sentiment · Malaysia" },
+  keywords:{ title:"Keyword tracker", sub:"Extracted topics and trending terms" },
+  briefing:{ title:"AI intelligence briefing", sub:"Auto-generated from library data" },
+  moderators:{ title:"Moderator management", sub:"Team overview and submission log" },
+};
+
+let library = [];
+let pendingEntry = null;
+let platChart = null;
+let kwChart = null;
+
+const MY_STATES = [
+  "Selangor","Johor","Perak","Kedah","Kelantan","Pahang",
+  "Sarawak","Sabah","Penang","Terengganu","NS","Melaka","Perlis"
+];
+
+function gotoPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
+  });
+  document.getElementById('topbar-title').textContent = PAGES[id].title;
+  document.getElementById('topbar-sub').textContent = PAGES[id].sub;
+  if(id==='dashboard') renderDashboard();
+  if(id==='keywords') renderKeywords();
+  if(id==='library') renderLibrary();
+}
+
+async function submitContent(){
+  const platform = document.getElementById('s-platform').value;
+  const type = document.getElementById('s-type').value;
+  const state = document.getElementById('s-state').value || 'All Malaysia';
+  const tags = document.getElementById('s-tags').value;
+  const content = document.getElementById('s-content').value.trim();
+  const url = document.getElementById('s-url').value;
+  const reach = document.getElementById('s-reach').value;
+
+  if(!content){ alert('Sila masukkan kandungan untuk dianalisis.'); return; }
+  if(!platform){ alert('Sila pilih platform.'); return; }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-loader" aria-hidden="true"></i> Menganalisis...';
+
+  const card = document.getElementById('ai-result-card');
+  const out = document.getElementById('ai-output');
+  const parsed = document.getElementById('ai-parsed');
+  card.style.display = 'block';
+  out.textContent = '';
+  out.className = 'ai-output ai-thinking';
+  out.textContent = 'AI sedang menganalisis kandungan...';
+  parsed.style.display = 'none';
+
+  const systemPrompt = `You are a Malaysian voter sentiment intelligence analyst. Analyse social media content and return ONLY a JSON object with these exact fields:
+{
+  "sentiment": "Positif" | "Negatif" | "Neutral",
+  "score": <integer 0-100, where 100=extremely positive, 50=neutral, 0=extremely negative>,
+  "intensity": "Tinggi" | "Sederhana" | "Rendah",
+  "topics": [array of 3-6 Malay/English topic keywords extracted from the content],
+  "entities": [array of political parties, leaders, policies, places mentioned],
+  "demographic_signal": "Belia" | "Dewasa" | "Senior" | "Campuran",
+  "reach_weight": <integer 1-5 based on estimated reach>,
+  "key_grievance": "<one sentence summary of the main sentiment in Bahasa Malaysia>",
+  "analyst_note": "<one actionable insight for a politician in BM or English>"
+}
+Return ONLY the JSON. No explanation, no markdown fences.`;
+
+  const userPrompt = `Platform: ${platform}
+Content type: ${type}
+State: ${state}
+Tags: ${tags}
+Reach: ${reach}
+URL: ${url||'not provided'}
+Content:
+"""
+${content.slice(0,2000)}
+"""`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        system: systemPrompt,
+        messages:[{ role:'user', content: userPrompt }]
+      })
+    });
+    const data = await resp.json();
+    const raw = data.content?.[0]?.text || '{}';
+
+    out.className = 'ai-output';
+    out.textContent = raw;
+
+    let parsed_data;
+    try { parsed_data = JSON.parse(raw.replace(/```json|```/g,'')); }
+    catch(e){ out.textContent = 'Error parsing AI response. Raw:\n\n'+raw; btn.disabled=false; btn.innerHTML='<i class="ti ti-sparkles" aria-hidden="true"></i>Analyse with AI'; return; }
+
+    pendingEntry = { platform, type, state, tags, content: content.slice(0,500), url, reach, timestamp: new Date().toISOString(), ...parsed_data };
+
+    renderParsed(parsed_data);
+    parsed.style.display = 'block';
+  } catch(e) {
+    out.className = 'ai-output';
+    out.textContent = 'Error: '+e.message;
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="ti ti-sparkles" aria-hidden="true"></i>Analyse with AI';
+}
+
+function renderParsed(d){
+  const score = d.score || 50;
+  const ring = document.getElementById('score-ring');
+  ring.textContent = score;
+  ring.style.color = score>=60?'#1D7A4A':score>=40?'#BA7517':'#A32D2D';
+  ring.style.borderColor = score>=60?'#1D7A4A':score>=40?'#BA7517':'#A32D2D';
+  document.getElementById('score-label').textContent = d.key_grievance || '–';
+  document.getElementById('score-sub').textContent = d.analyst_note || '–';
+
+  const sb = document.getElementById('sentiment-badge');
+  const sClass = d.sentiment==='Positif'?'b-green':d.sentiment==='Negatif'?'b-red':'b-amber';
+  sb.innerHTML = `<span class="badge ${sClass}">${d.sentiment||'–'}</span> <span class="badge b-gray">${d.intensity||'–'}</span> <span class="badge b-purple">${d.demographic_signal||'–'}</span>`;
+
+  const posP = score>=60?(score-40)*1.5:0;
+  const negP = score<=40?(40-score)*1.5:0;
+  const neuP = Math.max(0,100-posP-negP);
+  document.getElementById('sent-bar').innerHTML = `<div style="flex:${Math.round(posP)};background:#1D9E75;min-width:${posP>0?4:0}px"></div><div style="flex:${Math.round(neuP)};background:#D3D1C7;min-width:${neuP>0?4:0}px"></div><div style="flex:${Math.round(negP)};background:#E24B4A;min-width:${negP>0?4:0}px"></div>`;
+
+  const kwEl = document.getElementById('kw-extracted');
+  const allKw = [...(d.topics||[]),...(d.entities||[])];
+  kwEl.innerHTML = allKw.map(k=>`<span class="kw-tag">${k}</span>`).join('');
+}
+
+function approveToLibrary(){
+  if(!pendingEntry) return;
+  library.push(pendingEntry);
+  pendingEntry = null;
+  document.getElementById('lib-count').textContent = library.length;
+  logModAction('Kandungan diluluskan ke library');
+  document.getElementById('ai-result-card').style.display='none';
+  document.getElementById('s-content').value='';
+  alert('Diluluskan! Kandungan telah ditambah ke Central Library.');
+}
+
+function rejectEntry(){
+  pendingEntry = null;
+  document.getElementById('ai-result-card').style.display='none';
+}
+
+function renderLibrary(){
+  const q = document.getElementById('lib-search').value.toLowerCase();
+  const pf = document.getElementById('lib-filter-platform').value;
+  const sf = document.getElementById('lib-filter-sent').value;
+  const filtered = library.filter(e=>{
+    const matchQ = !q || e.content.toLowerCase().includes(q) || (e.topics||[]).join(' ').toLowerCase().includes(q) || (e.state||'').toLowerCase().includes(q);
+    const matchP = !pf || e.platform===pf;
+    const matchS = !sf || e.sentiment===sf;
+    return matchQ&&matchP&&matchS;
+  });
+
+  document.getElementById('lib-empty').style.display = filtered.length?'none':'block';
+  const ll = document.getElementById('lib-list');
+  ll.innerHTML = filtered.slice().reverse().map((e,i)=>{
+    const sc = e.score||50;
+    const sClass = sc>=60?'#1D7A4A':sc>=40?'#BA7517':'#A32D2D';
+    const sentBadge = e.sentiment==='Positif'?'b-green':e.sentiment==='Negatif'?'b-red':'b-amber';
+    const d = new Date(e.timestamp);
+    const ts = d.toLocaleDateString('ms-MY')+" "+d.toLocaleTimeString('ms-MY',{hour:'2-digit',minute:'2-digit'});
+    return `<div class="card" style="margin-bottom:10px">
+      <div class="lib-item-head">
+        <div class="score-ring" style="border-color:${sClass};color:${sClass}">${sc}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px">
+            <span class="badge b-blue">${e.platform}</span>
+            <span class="badge b-gray">${e.type||''}</span>
+            <span class="badge ${sentBadge}">${e.sentiment}</span>
+            <span class="badge b-gray">${e.state||'All Malaysia'}</span>
+            <span class="lib-meta" style="margin-left:auto">${ts}</span>
+          </div>
+          <div style="font-size:12px;font-weight:500;margin-bottom:3px;color:var(--text-primary)">${e.key_grievance||e.content.slice(0,80)+'...'}</div>
+          <div style="font-size:11px;color:var(--text-muted)">${e.analyst_note||''}</div>
+        </div>
+      </div>
+      <div>${(e.topics||[]).map(k=>`<span class="kw-tag">${k}</span>`).join('')}${(e.entities||[]).map(k=>`<span class="kw-tag" style="background:var(--bg-pro,#eeedfe);border-color:#afa9ec;color:#3c3489">${k}</span>`).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+function filterLib(){ renderLibrary(); }
+
+function renderDashboard(){
+  const n = library.length;
+  document.getElementById('d-total').textContent = n;
+  if(!n){ document.getElementById('d-avg').textContent='–'; return; }
+
+  const avg = Math.round(library.reduce((a,e)=>a+(e.score||50),0)/n);
+  document.getElementById('d-avg').textContent = avg;
+  document.getElementById('d-avg-sub').textContent = avg>=60?'Overall positif':avg>=40?'Neutral':'Negatif dominan';
+
+  const neg = library.filter(e=>(e.score||50)<40).length;
+  document.getElementById('d-neg').textContent = neg;
+
+  const platCount = {};
+  library.forEach(e=>platCount[e.platform]=(platCount[e.platform]||0)+1);
+  const topPlat = Object.entries(platCount).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('d-top-plat').textContent = topPlat?topPlat[0]:'–';
+
+  renderStateMap();
+  renderPlatChart();
+  renderIssueBars();
+  renderDashRecent();
+}
+
+function renderStateMap(){
+  const stateScores = {};
+  library.forEach(e=>{ if(e.state&&e.state!=='All Malaysia'){ stateScores[e.state]=(stateScores[e.state]||[]).concat(e.score||50); } });
+  const el = document.getElementById('state-map');
+  el.innerHTML = MY_STATES.map(s=>{
+    const scores = stateScores[s];
+    const avg = scores?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):null;
+    const bg = avg==null?'var(--surface-1)':avg>=60?'#EAF3DE':avg>=40?'#FAEEDA':'#FCEBEB';
+    const tc = avg==null?'var(--text-muted)':avg>=60?'#27500A':avg>=40?'#633806':'#791F1F';
+    return `<div class="state-cell" style="background:${bg};color:${tc}">
+      <div class="state-name">${s}</div>
+      <div class="state-score">${avg!=null?avg:'–'}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderPlatChart(){
+  const platScores = {};
+  library.forEach(e=>{ if(!platScores[e.platform]) platScores[e.platform]=[]; platScores[e.platform].push(e.score||50); });
+  const labels = Object.keys(platScores);
+  const data = labels.map(p=>Math.round(platScores[p].reduce((a,b)=>a+b,0)/platScores[p].length));
+  if(platChart){ platChart.destroy(); }
+  if(!labels.length) return;
+  const ctx = document.getElementById('platChart');
+  platChart = new Chart(ctx,{
+    type:'bar',
+    data:{ labels, datasets:[{ data, backgroundColor:data.map(v=>v>=60?'#1D9E75':v>=40?'#EF9F27':'#E24B4A'), borderRadius:4, borderWidth:0 }] },
+    options:{ responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{ y:{ min:0,max:100,ticks:{font:{size:10},color:'#898781'},grid:{color:'#e1e0d9'}},
+        x:{ ticks:{font:{size:10},color:'#898781'},grid:{display:false} } } }
+  });
+}
+
+function renderIssueBars(){
+  const topicCount = {};
+  library.forEach(e=>{ (e.topics||[]).forEach(t=>topicCount[t]=(topicCount[t]||0)+1); });
+  const sorted = Object.entries(topicCount).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const max = sorted[0]?.[1]||1;
+  const el = document.getElementById('issue-bars');
+  el.innerHTML = sorted.map(([t,c])=>`<div class="trend-row">
+    <span class="trend-label">${t}</span>
+    <div class="trend-track"><div class="trend-fill" style="width:${Math.round(c/max*100)}%;background:var(--text-accent,#185fa5)"></div></div>
+    <span class="trend-val" style="color:var(--text-accent)">${c}</span>
+  </div>`).join('') || '<div style="color:var(--text-muted);font-size:12px">No data yet.</div>';
+}
+
+function renderDashRecent(){
+  const el = document.getElementById('dash-recent');
+  if(!library.length){ el.innerHTML='<div style="color:var(--text-muted);font-size:12px">No entries yet.</div>'; return; }
+  el.innerHTML = library.slice(-5).reverse().map(e=>{
+    const sentBadge = e.sentiment==='Positif'?'b-green':e.sentiment==='Negatif'?'b-red':'b-amber';
+    return `<div class="feed-item">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="badge b-blue">${e.platform}</span>
+        <span class="badge ${sentBadge}">${e.sentiment}</span>
+        <span style="font-size:11px;font-weight:500;color:var(--text-primary);flex:1">${e.key_grievance||e.content.slice(0,60)+'...'}</span>
+        <span style="font-size:11px;font-weight:500;color:${(e.score||50)>=60?'#1D7A4A':(e.score||50)>=40?'#BA7517':'#A32D2D'}">${e.score||'–'}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderKeywords(){
+  const topicCount = {};
+  library.forEach(e=>{ (e.topics||[]).forEach(t=>topicCount[t]=(topicCount[t]||0)+1); });
+  const all = Object.entries(topicCount).sort((a,b)=>b[1]-a[1]);
+  const hot = all.slice(0,6);
+  const rising = all.slice(6,12);
+
+  document.getElementById('kw-hot').innerHTML = hot.map(([t,c])=>`<span class="kw-tag hot">${t} <strong>${c}</strong></span>`).join('') || '<span style="color:var(--text-muted);font-size:12px">Add submissions to see keywords.</span>';
+  document.getElementById('kw-rising').innerHTML = rising.map(([t,c])=>`<span class="kw-tag rising">${t} <strong>${c}</strong></span>`).join('') || '<span style="color:var(--text-muted);font-size:12px">Not enough data yet.</span>';
+  document.getElementById('kw-all').innerHTML = all.map(([t,c])=>`<span class="kw-tag stable">${t} (${c})</span>`).join('') || '<span style="color:var(--text-muted);font-size:12px">No keywords yet.</span>';
+
+  const topKw = all.slice(0,10);
+  const wrap = document.getElementById('kw-chart-wrap');
+  wrap.style.height = Math.max(160, topKw.length*40+60)+'px';
+  wrap.style.position = 'relative';
+  if(kwChart){ kwChart.destroy(); kwChart=null; }
+  if(topKw.length){
+    kwChart = new Chart(document.getElementById('kwChart'),{
+      type:'bar',
+      data:{ labels:topKw.map(([t])=>t), datasets:[{ data:topKw.map(([,c])=>c), backgroundColor:'#2a78d6', borderRadius:4, borderWidth:0 }] },
+      options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{display:false}},
+        scales:{ x:{ticks:{font:{size:10},color:'#898781'},grid:{color:'#e1e0d9'}},
+          y:{ticks:{font:{size:11},color:'#52514e'},grid:{display:false}} } }
+    });
+  }
+}
+
+async function generateBriefing(){
+  if(library.length<1){ alert('Tambah sekurang-kurangnya 1 entri dalam library untuk menjana briefing.'); return; }
+
+  const el = document.getElementById('briefing-output');
+  const empty = document.getElementById('briefing-empty');
+  const meta = document.getElementById('briefing-meta');
+
+  empty.style.display = 'none';
+  el.style.display = 'block';
+  el.textContent = 'Menjana laporan risikan...';
+
+  const summary = library.map((e,i)=>`[${i+1}] Platform:${e.platform} | State:${e.state} | Sentiment:${e.sentiment}(${e.score}) | Topics:${(e.topics||[]).join(',')} | Grievance:${e.key_grievance}`).join('\n');
+  const avgScore = Math.round(library.reduce((a,e)=>a+(e.score||50),0)/library.length);
+  const negCount = library.filter(e=>(e.score||50)<40).length;
+
+  const prompt = `You are a senior political intelligence analyst for Malaysia. Based on the following ${library.length} social media entries scored by AI, write a concise intelligence briefing in English for a senior politician or party strategist.
+
+LIBRARY DATA:
+${summary}
+
+AGGREGATE: ${library.length} entries, avg score ${avgScore}/100, ${negCount} negative alerts.
+
+Write the briefing with these sections (use **bold** for section headers):
+**Executive Summary** (2-3 sentences)
+**Key Public Concerns** (bullet points)
+**Sentiment Breakdown by Platform** (brief)
+**Geographic Hotspots** (which states show concerning sentiment)
+**Emerging Keywords to Watch** (list)
+**Strategic Recommendations** (3 actionable points for the politician)
+**Risk Alerts** (any high-severity negative sentiment to address immediately)
+
+Write in clear, professional English. Be direct and actionable. Max 400 words.`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:1000, messages:[{role:'user',content:prompt}] })
+    });
+    const data = await resp.json();
+    let text = data.content?.[0]?.text || 'Error generating briefing.';
+    text = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+    el.innerHTML = text;
+
+    const topicCount = {};
+    library.forEach(e=>(e.topics||[]).forEach(t=>topicCount[t]=(topicCount[t]||0)+1));
+    const topTopics = Object.entries(topicCount).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([t])=>t);
+    meta.style.display='block';
+    document.getElementById('briefing-meta-content').innerHTML = `
+      <strong>Generated:</strong> ${new Date().toLocaleString('ms-MY')}<br>
+      <strong>Library size:</strong> ${library.length} entries<br>
+      <strong>Avg sentiment score:</strong> ${avgScore}/100<br>
+      <strong>Negative alerts:</strong> ${negCount}<br>
+      <strong>Top topics:</strong> ${topTopics.join(', ')||'–'}
+    `;
+  } catch(e){
+    el.textContent = 'Error: '+e.message;
+  }
+}
+
+function logModAction(msg){
+  const el = document.getElementById('mod-log');
+  const d = new Date();
+  const ts = d.toLocaleTimeString('ms-MY',{hour:'2-digit',minute:'2-digit'});
+  const line = `<div class="feed-item"><span class="lib-meta">${ts}</span> · <strong>KZ</strong> · ${msg}</div>`;
+  if(el.textContent.includes('No submissions')) el.innerHTML = '';
+  el.innerHTML = line + el.innerHTML;
+}
+</script>

@@ -1,0 +1,448 @@
+
+<h2 class="sr-only">PulseMY — Malaysian voter intelligence platform pre-loaded with 12 real social media examples, AI-scored and displayed across library, dashboard, keyword tracker, and briefing views</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans,system-ui,sans-serif);background:var(--surface-0,#f5f5f2);color:var(--text-primary,#0b0b0b);font-size:13px}
+.shell{display:flex;min-height:700px}
+.sb{width:190px;flex-shrink:0;background:var(--surface-2,#fff);border-right:0.5px solid var(--border);display:flex;flex-direction:column}
+.sb-brand{padding:14px 16px 12px;border-bottom:0.5px solid var(--border)}
+.sb-logo{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.sb-dot{width:22px;height:22px;border-radius:6px;background:#185fa5;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-name{font-size:14px;font-weight:500}
+.sb-sub{font-size:10px;color:var(--text-muted)}
+.sb-nav{padding:8px;flex:1}
+.sb-sec{font-size:10px;color:var(--text-muted);padding:8px 8px 4px;letter-spacing:.04em;text-transform:uppercase}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:pointer;color:var(--text-secondary);font-size:12px;margin-bottom:1px;border:none;background:none;width:100%;text-align:left}
+.ni i{font-size:15px;flex-shrink:0}
+.ni:hover{background:var(--surface-1);color:var(--text-primary)}
+.ni.on{background:var(--bg-accent,#e6f1fb);color:var(--text-accent,#185fa5);font-weight:500}
+.ni .ct{margin-left:auto;background:#185fa5;color:#fff;font-size:10px;padding:1px 6px;border-radius:10px}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{background:var(--surface-2,#fff);border-bottom:0.5px solid var(--border);padding:11px 20px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.live-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;background:#eaf3de;border:0.5px solid #c0dd97;color:#27500a;margin-left:auto}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#27500a}
+.content{flex:1;overflow-y:auto;padding:18px 20px}
+.pg{display:none}.pg.on{display:block}
+.card{background:var(--surface-2,#fff);border:0.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px}
+.ch{font-size:13px;font-weight:500;margin-bottom:12px;display:flex;align-items:center;gap:6px;color:var(--text-primary)}
+.ch i{font-size:15px;color:#185fa5}
+.ch-r{margin-left:auto;font-size:11px;color:#185fa5;font-weight:400;cursor:pointer}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.kpi{background:var(--surface-1);border-radius:8px;padding:12px 14px}
+.kl{font-size:11px;color:var(--text-muted);margin-bottom:4px}
+.kv{font-size:22px;font-weight:500;line-height:1}
+.ks{font-size:11px;margin-top:3px;color:var(--text-muted)}
+.bdg{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:500}
+.bb{background:#e6f1fb;color:#0c447c}
+.bg{background:#eaf3de;color:#27500a}
+.br{background:#fcebeb;color:#791f1f}
+.ba{background:#faeeda;color:#633806}
+.bgy{background:var(--surface-1);color:var(--text-secondary)}
+.bp{background:#eeedfe;color:#3c3489}
+.sep{height:0.5px;background:var(--border);margin:10px 0}
+.tr{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.tl{font-size:12px;width:110px;flex-shrink:0}
+.tt{flex:1;height:6px;background:var(--surface-1);border-radius:3px;overflow:hidden}
+.tf{height:100%;border-radius:3px}
+.tv{font-size:12px;font-weight:500;width:28px;text-align:right}
+.fi{padding:9px 0;border-bottom:0.5px solid var(--border)}
+.fi:last-child{border-bottom:none;padding-bottom:0}
+.kwtag{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;margin:2px;cursor:default}
+.kwh{background:#fcebeb;border:0.5px solid #f7c1c1;color:#791f1f}
+.kwr{background:#faeeda;border:0.5px solid #fac775;color:#633806}
+.kws{background:#e6f1fb;border:0.5px solid #b5d4f4;color:#0c447c}
+.kwn{background:var(--surface-1);border:0.5px solid var(--border);color:var(--text-secondary)}
+.ring{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;border:2.5px solid}
+.ai-out{background:var(--surface-1);border:0.5px solid var(--border);border-left:3px solid #b5d4f4;border-radius:0 8px 8px 0;padding:14px;font-size:13px;line-height:1.8;color:var(--text-secondary)}
+.state-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.sc{border-radius:6px;padding:8px 5px;text-align:center}
+.sn{font-size:10px;font-weight:500}
+.sv{font-size:14px;font-weight:500;margin-top:2px}
+.post-quote{background:var(--surface-1);border-left:3px solid var(--border-strong,#ccc);border-radius:0 6px 6px 0;padding:8px 10px;font-size:12px;color:var(--text-secondary);font-style:italic;margin:6px 0;line-height:1.6}
+.ai-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:500;background:#eeedfe;color:#3c3489;margin:2px}
+</style>
+
+<div class="shell">
+<div class="sb">
+  <div class="sb-brand">
+    <div class="sb-logo">
+      <div class="sb-dot"><i class="ti ti-radar" style="font-size:12px;color:#fff" aria-hidden="true"></i></div>
+      <span class="sb-name">PulseMY</span>
+    </div>
+    <div class="sb-sub">Voter intelligence platform</div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-sec">Moderator</div>
+    <button class="ni" onclick="go('posts')"><i class="ti ti-news" aria-hidden="true"></i>Source posts <span class="ct">12</span></button>
+    <button class="ni" onclick="go('lib')"><i class="ti ti-database" aria-hidden="true"></i>Central library <span class="ct" id="lct">12</span></button>
+    <div class="sb-sec">Intelligence</div>
+    <button class="ni on" onclick="go('dash')"><i class="ti ti-layout-dashboard" aria-hidden="true"></i>Dashboard</button>
+    <button class="ni" onclick="go('kw')"><i class="ti ti-trending-up" aria-hidden="true"></i>Keyword tracker</button>
+    <button class="ni" onclick="go('brief')"><i class="ti ti-file-text" aria-hidden="true"></i>AI briefing</button>
+  </div>
+  <div style="padding:10px 16px;border-top:0.5px solid var(--border)">
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="width:28px;height:28px;border-radius:50%;background:#e6f1fb;color:#0c447c;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500">KZ</div>
+      <div><div style="font-size:12px;font-weight:500">Kairel Z.</div><div style="font-size:10px;color:var(--text-muted)">Senior analyst</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div style="font-size:14px;font-weight:500" id="tb-title">Intelligence dashboard</div>
+      <div style="font-size:11px;color:var(--text-muted)" id="tb-sub">12 entries · AI-scored · Jul 2026</div>
+    </div>
+    <div class="live-chip"><div class="live-dot"></div>12 entries processed</div>
+  </div>
+
+  <div class="content">
+
+  <!-- ═══ SOURCE POSTS ════════════════════════════════════════════════════ -->
+  <div class="pg" id="pg-posts">
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">Raw content submitted by moderators — click any post to see AI output</div>
+    <div id="post-list"></div>
+  </div>
+
+  <!-- ═══ LIBRARY ══════════════════════════════════════════════════════════ -->
+  <div class="pg" id="pg-lib">
+    <div id="lib-list"></div>
+  </div>
+
+  <!-- ═══ DASHBOARD ════════════════════════════════════════════════════════ -->
+  <div class="pg on" id="pg-dash">
+    <div class="g4" id="kpi-row"></div>
+    <div class="g2">
+      <div class="card">
+        <div class="ch"><i class="ti ti-map-pin" aria-hidden="true"></i>State sentiment map</div>
+        <div class="state-grid" id="state-map"></div>
+      </div>
+      <div class="card">
+        <div class="ch"><i class="ti ti-chart-bar" aria-hidden="true"></i>Sentiment by platform</div>
+        <div style="position:relative;height:170px"><canvas id="platC" role="img" aria-label="Bar chart showing average sentiment score by social media platform">Average sentiment by platform.</canvas></div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="ch"><i class="ti ti-chart-donut" aria-hidden="true"></i>Overall sentiment split</div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="position:relative;width:110px;height:110px;flex-shrink:0"><canvas id="sentDonut" role="img" aria-label="Donut chart of sentiment distribution">Sentiment: positive, negative, neutral.</canvas></div>
+          <div id="donut-legend" style="flex:1"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch"><i class="ti ti-users" aria-hidden="true"></i>Demographic signal</div>
+        <div id="demo-bars"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><i class="ti ti-flame" aria-hidden="true"></i>Top issues by volume</div>
+      <div id="issue-bars"></div>
+    </div>
+    <div class="card">
+      <div class="ch"><i class="ti ti-alert-triangle" aria-hidden="true"></i>Negative alerts <span style="font-size:11px;color:var(--text-muted);font-weight:400;margin-left:4px">entries scoring below 40</span></div>
+      <div id="neg-alerts"></div>
+    </div>
+  </div>
+
+  <!-- ═══ KEYWORDS ══════════════════════════════════════════════════════════ -->
+  <div class="pg" id="pg-kw">
+    <div class="g2">
+      <div class="card"><div class="ch"><i class="ti ti-flame" aria-hidden="true"></i>Trending hot keywords</div><div id="kw-hot" style="display:flex;flex-wrap:wrap;gap:5px;padding:4px 0"></div></div>
+      <div class="card"><div class="ch"><i class="ti ti-trending-up" aria-hidden="true"></i>Entities detected</div><div id="kw-ent" style="display:flex;flex-wrap:wrap;gap:5px;padding:4px 0"></div></div>
+    </div>
+    <div class="card">
+      <div class="ch"><i class="ti ti-chart-bar" aria-hidden="true"></i>Keyword frequency ranking</div>
+      <div style="position:relative" id="kw-chart-wrap"><canvas id="kwC" role="img" aria-label="Horizontal bar chart of keyword frequency">Keyword frequency chart.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch"><i class="ti ti-tags" aria-hidden="true"></i>Full keyword cloud</div>
+      <div id="kw-all" style="display:flex;flex-wrap:wrap;gap:5px;padding:4px 0"></div>
+    </div>
+  </div>
+
+  <!-- ═══ BRIEFING ══════════════════════════════════════════════════════════ -->
+  <div class="pg" id="pg-brief">
+    <div class="card">
+      <div class="ch"><i class="ti ti-file-text" aria-hidden="true"></i>AI intelligence briefing
+        <button onclick="genBriefing()" style="margin-left:auto;padding:5px 12px;border-radius:8px;border:0.5px solid var(--border-strong,#ccc);background:var(--surface-1);color:var(--text-primary);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px"><i class="ti ti-sparkles" aria-hidden="true"></i>Regenerate</button>
+      </div>
+      <div class="ai-out" id="brief-out">Generating briefing from 12 library entries...</div>
+    </div>
+    <div class="card" id="brief-meta">
+      <div class="ch"><i class="ti ti-info-circle" aria-hidden="true"></i>Briefing metadata</div>
+      <div id="brief-meta-body" style="font-size:12px;color:var(--text-secondary);line-height:1.8"></div>
+    </div>
+  </div>
+
+  </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const POSTS = [
+  { id:1, platform:"TikTok", type:"Video (transcript)", state:"Selangor", reach:"100,000 – 1M", tags:"kos sara hidup, belia, gaji", moderator:"Ahmad Hafizi",
+    content:"Korang tau tak berapa ramai grad sekarang dapat kerja bawah RM2000? Aku baru grad UiTM, 6 bulan cari kerja, dapat offer RM1800 dekat Shah Alam. Sewa rumah RM700, makan RM500, transport RM300. Tinggal RM300 je. Macam mana nak kahwin? Macam mana nak beli kereta? Kerajaan cakap ekonomi elok tapi aku rasa lain. #BeliaMalaysia #GraduateUnemployed",
+    ai:{ sentiment:"Negatif", score:22, intensity:"Tinggi", topics:["gaji rendah","graduate unemployment","kos sara hidup","perumahan","belia"], entities:["UiTM","Shah Alam"], demographic_signal:"Belia", key_grievance:"Graduan baru tidak mampu survive dengan gaji semasa kerana kos sara hidup terlalu tinggi di bandar.", analyst_note:"Graduate wage gap vs cost of living is a severe youth-facing crisis. Urgently needs a policy narrative or a targeted grad wage support scheme before GE." }
+  },
+  { id:2, platform:"Facebook", type:"Post / caption", state:"Kelantan", reach:"10,000 – 100,000", tags:"banjir, infrastruktur, kerajaan", moderator:"Siti Rahmah",
+    content:"Dah 3 kali banjir tahun ni Kelantan. Kampung kami Kuala Krai dah macam tradisi je banjir tiap tahun. Kami minta dah lama pembinaan tembok banjir tapi tak ada. Harta benda rosak tiap kali. Anak-anak kena pindah sekolah. MP kami mana pergi? Nampak je masa kempen! Lepas menang hilang. Betul2 kecewa.",
+    ai:{ sentiment:"Negatif", score:18, intensity:"Tinggi", topics:["banjir","infrastruktur","MP tidak hadir","Kelantan","saliran"], entities:["Kuala Krai","Kelantan"], demographic_signal:"Dewasa", key_grievance:"Penduduk Kelantan kecewa dengan ketiadaan penyelesaian banjir berulang dan MP yang dilihat abai selepas menang pilihan raya.", analyst_note:"Flood infrastructure neglect in Kelantan is a ticking electoral time bomb. MP visibility between elections is critically low." }
+  },
+  { id:3, platform:"Threads", type:"Post / caption", state:"Kuala Lumpur", reach:"10,000 – 100,000", tags:"MRT, pengangkutan awam, bandar", moderator:"Ahmad Hafizi",
+    content:"Serious la MRT3 Circle Line ni dah mana? Bila nak siap? Orang KL masih kena stuck dalam jam hari2. Kerajaan dah announce berkali-kali tapi construction langsung tak nampak progress. Cukai jalan makin mahal, tol mahal, tapi public transport tak improve. Bila?",
+    ai:{ sentiment:"Negatif", score:31, intensity:"Sederhana", topics:["MRT3","pengangkutan awam","kesesakan jalan raya","tol","pembangunan bandar"], entities:["MRT3 Circle Line","KL","Lembah Klang"], demographic_signal:"Belia", key_grievance:"Warga KL frust dengan kelewatan MRT3 dan kos pengangkutan yang terus meningkat tanpa peningkatan perkhidmatan awam.", analyst_note:"Urban transport dissatisfaction is high among commuters. MRT3 delays need a credible updated timeline communicated publicly." }
+  },
+  { id:4, platform:"Instagram", type:"Viral reel / clip", state:"Penang", reach:"1M+", tags:"pelancongan, Penang, ekonomi", moderator:"Siti Rahmah",
+    content:"Penang Food Festival 2026 semalam luar biasa! Ribuan pelancong datang dari seluruh dunia. Char kuey teow, nasi kandar, oh cin cai semua best. Ni la yang buat Malaysia famous. Terima kasih kerajaan negeri Penang organize event macam ni. Economy kita pun booming dari tourism. Proud Penangite!",
+    ai:{ sentiment:"Positif", score:84, intensity:"Tinggi", topics:["pelancongan","makanan tempatan","ekonomi Penang","festival","bangga negara"], entities:["Penang","Penang Food Festival 2026"], demographic_signal:"Campuran", key_grievance:"Rakyat Penang berbangga dan berpuas hati dengan kejayaan festival makanan yang menarik pelancong antarabangsa.", analyst_note:"High-visibility cultural events drive strong positive sentiment. State government can leverage this for economic storytelling." }
+  },
+  { id:5, platform:"Twitter / X", type:"Comment thread", state:"Johor", reach:"10,000 – 100,000", tags:"Johor Bahru, jenayah, keselamatan", moderator:"Ahmad Hafizi",
+    content:"JB ni serius dah tak selamat. 3 hari berturut-turut rompak berlaku dekat kawasan aku Skudai. Jiran aku kena pecah rumah tengah hari. Polis tangkap tapi lepas balik. Apa jadi dengan sistem undang-undang kita? Ramai bangkitkan isu ni tapi media mainstream senyap. PDRM please do something.",
+    ai:{ sentiment:"Negatif", score:25, intensity:"Tinggi", topics:["jenayah","keselamatan","PDRM","rompak","Johor Bahru"], entities:["Johor Bahru","Skudai","PDRM"], demographic_signal:"Dewasa", key_grievance:"Kadar jenayah di JB meningkat dan kepercayaan kepada polis semakin merosot ekoran penangkapan yang tidak berkesan.", analyst_note:"Rising crime + weak enforcement perception in JB is a major electorate concern. Police visibility and prosecution rate messaging is urgently needed." }
+  },
+  { id:6, platform:"TikTok", type:"Video (transcript)", state:"Selangor", reach:"100,000 – 1M", tags:"harga rumah, property, belia", moderator:"Siti Rahmah",
+    content:"Aku nak tanya satu soalan simple — macam mana nak beli rumah kalau harga rumah dah cecah RM500k dekat Klang Valley? Loan reject pun confirm sebab gaji tak cukup. PR1MA macam syok sendiri je. Aku dah 32 tahun, masih duduk rumah parents. Ini bukan kisah aku sorang. Ini kisah majority generasi kita.",
+    ai:{ sentiment:"Negatif", score:20, intensity:"Tinggi", topics:["harga rumah","PR1MA","pemilikan rumah","generasi sandwich","Klang Valley"], entities:["PR1MA","Klang Valley","Selangor"], demographic_signal:"Belia", key_grievance:"Generasi belia tidak mampu memiliki rumah di Klang Valley walaupun dengan program perumahan sedia ada.", analyst_note:"Housing affordability is the single loudest youth grievance. PR1MA's effectiveness is being publicly questioned. A policy win here would shift sentiment significantly." }
+  },
+  { id:7, platform:"Facebook", type:"Post / caption", state:"Sabah", reach:"1,000 – 10,000", tags:"Sabah, hospital, kesihatan", moderator:"Ahmad Hafizi",
+    content:"Hospital Queen Elizabeth 2 Kota Kinabalu dah improve banyak. Baru-baru ni aku bawa ibu untuk rawatan kanser, doctor sangat profesional, ward bersih, ubat cukup. Puji kerajaan yang dah tambah peruntukan kesihatan untuk Sabah. Harap terus konsisten. Terima kasih KKM.",
+    ai:{ sentiment:"Positif", score:78, intensity:"Sederhana", topics:["kesihatan awam","hospital kerajaan","Sabah","rawatan kanser","KKM"], entities:["Hospital Queen Elizabeth 2","Kota Kinabalu","KKM"], demographic_signal:"Senior", key_grievance:"Penduduk Sabah mengakui peningkatan ketara dalam perkhidmatan hospital awam terutama dalam rawatan pakar.", analyst_note:"Healthcare improvement in Sabah is generating genuine positive sentiment. KKM should amplify these stories to counter the dominant negative healthcare narrative." }
+  },
+  { id:8, platform:"Twitter / X", type:"Post / caption", state:"Kuala Lumpur", reach:"100,000 – 1M", tags:"SST, GST, percukaian, kos", moderator:"Siti Rahmah",
+    content:"Kerajaan nak balik GST ke? Serius ni ke menda? Baru je settle dengan SST, lepas tu nak introduce lagi percukaian baru. Rakyat dah penat bayar. Kos hidup naik tiap bulan. Inflasi tak turun-turun. Kalau GST balik, I guarantee BN pun tak akan menang kat mana-mana. Rakyat dah muak.",
+    ai:{ sentiment:"Negatif", score:15, intensity:"Tinggi", topics:["GST","SST","percukaian","inflasi","kos sara hidup"], entities:["GST","SST","Barisan Nasional"], demographic_signal:"Dewasa", key_grievance:"Cadangan memperkenalkan semula GST mendapat penentangan kuat rakyat yang sudah tertekan dengan kos sara hidup tinggi.", analyst_note:"Any GST reintroduction narrative is politically toxic. This tweet thread shows cross-partisan voter anger. Strongly advise against any public signal on GST until economy stabilises." }
+  },
+  { id:9, platform:"Instagram", type:"Post / caption", state:"Terengganu", reach:"1,000 – 10,000", tags:"agama, rakyat, Terengganu", moderator:"Ahmad Hafizi",
+    content:"Majlis sambutan Maulidur Rasul di Terengganu tahun ni meriah sungguh. Kerajaan negeri buat hal dengan baik. Masyarakat bersatu, tok imam, orang muda semua hadir. Ini la kekuatan kita sebagai umat Islam Malaysia. Syukur.",
+    ai:{ sentiment:"Positif", score:82, intensity:"Sederhana", topics:["agama Islam","perpaduan masyarakat","Maulidur Rasul","Terengganu","kerajaan negeri"], entities:["Terengganu"], demographic_signal:"Campuran", key_grievance:"Sambutan keagamaan berskala besar di Terengganu dilihat sebagai bukti perpaduan masyarakat dan keberkesanan kerajaan negeri.", analyst_note:"Religious unity events consistently generate high positive sentiment in East Coast states. Strong optics for incumbent state leadership." }
+  },
+  { id:10, platform:"YouTube", type:"Video (transcript)", state:"Perak", reach:"10,000 – 100,000", tags:"ladang, pertanian, subsidi", moderator:"Siti Rahmah",
+    content:"Saya seorang pesawah padi dekat Teluk Intan. Harga beras naik tapi kami yang tanam tak dapat benefit langsung. Subsidi baja dah kurang. Subsidi diesel kena potong. Cost naik tapi jual padi sama harga lama. Anak muda dah tak nak kerja ladang. Kalau trend ni berterusan, dalam 10 tahun tak ada orang nak bertanam padi dah.",
+    ai:{ sentiment:"Negatif", score:28, intensity:"Tinggi", topics:["pertanian","subsidi baja","padi","petani","ketahanan makanan"], entities:["Teluk Intan","Perak"], demographic_signal:"Senior", key_grievance:"Petani padi menghadapi tekanan kos operasi yang meningkat akibat pengurangan subsidi sementara harga belian padi tidak bertambah.", analyst_note:"Agricultural subsidies cut is creating a food security narrative crisis. Farmers are a key rural voting bloc. Subsidy restoration or compensation scheme would recover ground." }
+  },
+  { id:11, platform:"Threads", type:"Post / caption", state:"Putrajaya", reach:"10,000 – 100,000", tags:"kerajaan perpaduan, Madani, ekonomi", moderator:"Ahmad Hafizi",
+    content:"Honestly kerajaan Madani dah buat banyak kerja dalam 2 tahun. Economy Malaysia ranking naik, FDI masuk besar-besaran, ringgit pun dah stabilise sikit. Bukan perfect tapi arah tuju dah betul. Kena bagi masa dan ruang untuk implement policy. Jangan nak tukar kerajaan tiap 2 tahun.",
+    ai:{ sentiment:"Positif", score:71, intensity:"Sederhana", topics:["Kerajaan Madani","FDI","ekonomi Malaysia","ringgit","kestabilan politik"], entities:["Kerajaan Madani","Malaysia"], demographic_signal:"Dewasa", key_grievance:"Segmen rakyat menyokong Kerajaan Madani dan melihat tanda-tanda positif dalam ekonomi walaupun masih banyak cabaran.", analyst_note:"Pro-government moderate sentiment exists and is being expressed publicly. This demographic is persuadable and should be engaged with economic proof points." }
+  },
+  { id:12, platform:"Facebook", type:"Comment thread", state:"Kedah", reach:"1,000 – 10,000", tags:"sekolah, pendidikan, kemudahan", moderator:"Siti Rahmah",
+    content:"Sekolah anak aku dekat Sg Petani dah 4 bulan pakai kipas rosak. Budget PIBG tak cukup. Minta peruntukan dari JPN pun lambat. Budak-budak belajar dalam panas. Cikgu pun dah tak larat. Ini bukan cerita baru — ini masalah kronik yang kerajaan tak selesai-selesai.",
+    ai:{ sentiment:"Negatif", score:33, intensity:"Sederhana", topics:["pendidikan","kemudahan sekolah","PIBG","JPN","Kedah"], entities:["Sg Petani","Kedah","JPN"], demographic_signal:"Dewasa", key_grievance:"Kemudahan asas sekolah yang uzur di Kedah menunjukkan kekurangan peruntukan pendidikan di peringkat akar umbi.", analyst_note:"School infrastructure deficiency is a visible, tangible failure that parents feel directly. A quick-win funding injection to dilapidated schools would generate high goodwill." }
+  },
+];
+
+let platChart=null, donutChart=null, kwChart=null;
+
+const pages={
+  posts:{ title:"Source posts", sub:"12 original posts submitted by moderators — pre-scored by AI" },
+  lib:{ title:"Central library", sub:"All 12 entries approved and AI-scored" },
+  dash:{ title:"Intelligence dashboard", sub:"12 entries · AI-scored · Jul 2026" },
+  kw:{ title:"Keyword tracker", sub:"Extracted topics and political entities from 12 posts" },
+  brief:{ title:"AI intelligence briefing", sub:"Auto-generated from full library" },
+};
+
+function go(id){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  document.querySelectorAll('.ni').forEach(n=>{ if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('on'); });
+  document.getElementById('tb-title').textContent=pages[id].title;
+  document.getElementById('tb-sub').textContent=pages[id].sub;
+  if(id==='kw') renderKw();
+}
+
+function scoreColor(s){ return s>=60?'#1D7A4A':s>=40?'#BA7517':'#A32D2D'; }
+function sentBadge(s){ return s==='Positif'?'bg':'br'; }
+
+function renderPosts(){
+  document.getElementById('post-list').innerHTML = POSTS.map(p=>`
+    <div class="card" style="margin-bottom:10px">
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <div class="ring" style="border-color:${scoreColor(p.ai.score)};color:${scoreColor(p.ai.score)}">${p.ai.score}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+            <span class="bdg bb">${p.platform}</span>
+            <span class="bdg bgy">${p.type}</span>
+            <span class="bdg ${sentBadge(p.ai.sentiment)}">${p.ai.sentiment}</span>
+            <span class="bdg bgy">${p.state}</span>
+            <span class="bdg bp">${p.ai.demographic_signal}</span>
+            <span style="font-size:10px;color:var(--text-muted);margin-left:auto">Mod: ${p.moderator}</span>
+          </div>
+          <div class="post-quote">${p.content.slice(0,220)}${p.content.length>220?'…':''}</div>
+          <div style="margin-top:8px;padding:8px;background:var(--bg-accent,#e6f1fb);border-radius:6px">
+            <div style="font-size:11px;font-weight:500;color:#0c447c;margin-bottom:3px">AI: Key grievance</div>
+            <div style="font-size:12px;color:#185fa5">${p.ai.key_grievance}</div>
+          </div>
+          <div style="margin-top:6px;padding:8px;background:#faeeda;border-radius:6px">
+            <div style="font-size:11px;font-weight:500;color:#633806;margin-bottom:3px">AI: Analyst note</div>
+            <div style="font-size:12px;color:#854F0B">${p.ai.analyst_note}</div>
+          </div>
+          <div style="margin-top:8px">
+            ${p.ai.topics.map(t=>`<span class="kwtag kwh">${t}</span>`).join('')}
+            ${p.ai.entities.map(e=>`<span class="kwtag kwn ai-tag"><i class="ti ti-building" style="font-size:10px" aria-hidden="true"></i>${e}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderLib(){
+  document.getElementById('lib-list').innerHTML = POSTS.map(p=>`
+    <div class="card" style="margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="ring" style="border-color:${scoreColor(p.ai.score)};color:${scoreColor(p.ai.score)}">${p.ai.score}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px">
+            <span class="bdg bb">${p.platform}</span>
+            <span class="bdg ${sentBadge(p.ai.sentiment)}">${p.ai.sentiment}</span>
+            <span class="bdg bgy">${p.state}</span>
+            <span class="bdg bp">${p.ai.demographic_signal}</span>
+            <span class="bdg ${p.ai.intensity==='Tinggi'?'br':p.ai.intensity==='Sederhana'?'ba':'bg'}">${p.ai.intensity}</span>
+          </div>
+          <div style="font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:2px">${p.ai.key_grievance}</div>
+          <div style="font-size:11px;color:var(--text-muted)">${p.ai.analyst_note.slice(0,100)}...</div>
+          <div style="margin-top:6px">${p.ai.topics.slice(0,4).map(t=>`<span class="kwtag kwn">${t}</span>`).join('')}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderDash(){
+  const n=POSTS.length;
+  const avg=Math.round(POSTS.reduce((a,p)=>a+p.ai.score,0)/n);
+  const neg=POSTS.filter(p=>p.ai.score<40).length;
+  const pos=POSTS.filter(p=>p.ai.score>=60).length;
+  const neutral=n-neg-pos;
+  const platCnt={};
+  POSTS.forEach(p=>{if(!platCnt[p.platform])platCnt[p.platform]=[];platCnt[p.platform].push(p.ai.score);});
+  const topPlat=Object.entries(platCnt).sort((a,b)=>{const aa=Math.round(a[1].reduce((x,y)=>x+y,0)/a[1].length);const bb=Math.round(b[1].reduce((x,y)=>x+y,0)/b[1].length);return bb-aa;})[0];
+
+  document.getElementById('kpi-row').innerHTML=`
+    <div class="kpi"><div class="kl">Total posts</div><div class="kv" style="color:#185fa5">${n}</div><div class="ks">library entries</div></div>
+    <div class="kpi"><div class="kl">Avg sentiment</div><div class="kv" style="color:${scoreColor(avg)}">${avg}<span style="font-size:14px;color:var(--text-muted);font-weight:400">/100</span></div><div class="ks">${avg<40?'Dominan negatif':avg<60?'Campuran':'Positif'}</div></div>
+    <div class="kpi"><div class="kl">Negative alerts</div><div class="kv" style="color:#a32d2d">${neg}</div><div class="ks">skor di bawah 40</div></div>
+    <div class="kpi"><div class="kl">Strongest platform</div><div class="kv" style="font-size:14px;color:#27500a">${topPlat?topPlat[0]:'–'}</div><div class="ks">avg skor tertinggi</div></div>`;
+
+  const states={};
+  POSTS.forEach(p=>{if(p.state){if(!states[p.state])states[p.state]=[];states[p.state].push(p.ai.score);}});
+  document.getElementById('state-map').innerHTML=Object.entries(states).map(([s,sc])=>{
+    const a=Math.round(sc.reduce((x,y)=>x+y,0)/sc.length);
+    const bg=a>=60?'#EAF3DE':a>=40?'#FAEEDA':'#FCEBEB';
+    const tc=a>=60?'#27500A':a>=40?'#633806':'#791F1F';
+    return `<div class="sc" style="background:${bg}"><div class="sn" style="color:${tc}">${s.length>8?s.slice(0,7)+'…':s}</div><div class="sv" style="color:${tc}">${a}</div></div>`;
+  }).join('');
+
+  const platLabels=Object.keys(platCnt);
+  const platAvg=platLabels.map(pl=>Math.round(platCnt[pl].reduce((x,y)=>x+y,0)/platCnt[pl].length));
+  if(platChart)platChart.destroy();
+  platChart=new Chart(document.getElementById('platC'),{type:'bar',
+    data:{labels:platLabels,datasets:[{data:platAvg,backgroundColor:platAvg.map(v=>v>=60?'#1D9E75':v>=40?'#EF9F27':'#E24B4A'),borderRadius:4,borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{min:0,max:100,ticks:{font:{size:10},color:'#898781'},grid:{color:'#e1e0d9'}},x:{ticks:{font:{size:10},color:'#898781'},grid:{display:false}}}}});
+
+  if(donutChart)donutChart.destroy();
+  donutChart=new Chart(document.getElementById('sentDonut'),{type:'doughnut',
+    data:{labels:['Positif','Neutral','Negatif'],datasets:[{data:[pos,neutral,neg],backgroundColor:['#1D9E75','#D3D1C7','#E24B4A'],borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false}}}});
+  document.getElementById('donut-legend').innerHTML=[
+    ['#1D9E75','Positif',pos],['#D3D1C7','Neutral',neutral],['#E24B4A','Negatif',neg]
+  ].map(([c,l,v])=>`<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><span style="width:10px;height:10px;border-radius:2px;background:${c};flex-shrink:0"></span><span style="font-size:12px">${l}</span><span style="font-size:12px;font-weight:500;margin-left:auto">${v} (${Math.round(v/n*100)}%)</span></div>`).join('');
+
+  const demos={};
+  POSTS.forEach(p=>{demos[p.ai.demographic_signal]=(demos[p.ai.demographic_signal]||0)+1;});
+  const dmax=Math.max(...Object.values(demos));
+  document.getElementById('demo-bars').innerHTML=Object.entries(demos).map(([d,c])=>`
+    <div class="tr"><span class="tl" style="font-size:12px">${d}</span>
+    <div class="tt"><div class="tf" style="width:${Math.round(c/dmax*100)}%;background:#185fa5"></div></div>
+    <span class="tv" style="color:#185fa5">${c}</span></div>`).join('');
+
+  const topicCnt={};
+  POSTS.forEach(p=>p.ai.topics.forEach(t=>{topicCnt[t]=(topicCnt[t]||0)+1;}));
+  const sorted=Object.entries(topicCnt).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const tmax=sorted[0]?.[1]||1;
+  document.getElementById('issue-bars').innerHTML=sorted.map(([t,c])=>`
+    <div class="tr"><span class="tl">${t}</span>
+    <div class="tt"><div class="tf" style="width:${Math.round(c/tmax*100)}%;background:#185fa5"></div></div>
+    <span class="tv" style="color:#185fa5">${c}</span></div>`).join('');
+
+  document.getElementById('neg-alerts').innerHTML=POSTS.filter(p=>p.ai.score<40).map(p=>`
+    <div class="fi">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <div class="ring" style="width:30px;height:30px;font-size:11px;border-color:#a32d2d;color:#a32d2d">${p.ai.score}</div>
+        <span class="bdg bb">${p.platform}</span><span class="bdg bgy">${p.state}</span>
+        <span class="bdg ba">${p.ai.intensity}</span>
+      </div>
+      <div style="font-size:12px;font-weight:500;color:var(--text-primary);margin-bottom:2px">${p.ai.key_grievance}</div>
+      <div style="font-size:11px;color:#854F0B;background:#faeeda;border-radius:5px;padding:5px 8px;margin-top:4px">${p.ai.analyst_note}</div>
+    </div>`).join('');
+}
+
+function renderKw(){
+  const topicCnt={};const entCnt={};
+  POSTS.forEach(p=>{
+    p.ai.topics.forEach(t=>{topicCnt[t]=(topicCnt[t]||0)+1;});
+    p.ai.entities.forEach(e=>{entCnt[e]=(entCnt[e]||0)+1;});
+  });
+  const tSorted=Object.entries(topicCnt).sort((a,b)=>b[1]-a[1]);
+  const eSorted=Object.entries(entCnt).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('kw-hot').innerHTML=tSorted.slice(0,8).map(([t,c])=>`<span class="kwtag kwh">${t} <strong>${c}</strong></span>`).join('');
+  document.getElementById('kw-ent').innerHTML=eSorted.map(([e,c])=>`<span class="kwtag kwn ai-tag">${e} ${c}</span>`).join('');
+  document.getElementById('kw-all').innerHTML=tSorted.map(([t,c])=>`<span class="kwtag ${c>=3?'kwh':c>=2?'kwr':'kws'}">${t} (${c})</span>`).join('');
+  const top10=tSorted.slice(0,10);
+  const wrap=document.getElementById('kw-chart-wrap');
+  wrap.style.height=Math.max(180,top10.length*38+60)+'px';wrap.style.position='relative';
+  if(kwChart){kwChart.destroy();kwChart=null;}
+  kwChart=new Chart(document.getElementById('kwC'),{type:'bar',
+    data:{labels:top10.map(([t])=>t),datasets:[{data:top10.map(([,c])=>c),backgroundColor:'#2a78d6',borderRadius:4,borderWidth:0}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{font:{size:10},color:'#898781'},grid:{color:'#e1e0d9'}},y:{ticks:{font:{size:11},color:'#52514e'},grid:{display:false}}}}});
+}
+
+async function genBriefing(){
+  const out=document.getElementById('brief-out');
+  out.textContent='Generating intelligence briefing from 12 library entries...';
+  const neg=POSTS.filter(p=>p.ai.score<40);
+  const pos=POSTS.filter(p=>p.ai.score>=60);
+  const avg=Math.round(POSTS.reduce((a,p)=>a+p.ai.score,0)/POSTS.length);
+  const topicCnt={};
+  POSTS.forEach(p=>p.ai.topics.forEach(t=>{topicCnt[t]=(topicCnt[t]||0)+1;}));
+  const topTopics=Object.entries(topicCnt).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([t])=>t);
+  const summary=POSTS.map((p,i)=>`[${i+1}] ${p.platform}|${p.state}|${p.ai.sentiment}(${p.ai.score})|${p.ai.demographic_signal}|Topics:${p.ai.topics.join(',')}|Grievance:${p.ai.key_grievance}`).join('\n');
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1200,
+        messages:[{role:'user',content:`You are a senior Malaysian political intelligence analyst. Based on these 12 social media entries (July 2026), write a concise intelligence briefing for a party strategist or senior politician.
+
+DATA:
+${summary}
+
+AGGREGATE: 12 entries, avg score ${avg}/100, ${neg.length} negative alerts (score<40), ${pos.length} positive entries.
+
+Write sections with **bold headers**:
+**Executive summary** (3 sentences max — overall public mood)
+**Top 5 public concerns ranked by urgency** (numbered, each with the key state/demographic affected)
+**Positive narratives to amplify** (what is working that can be used for messaging)  
+**High-risk alerts** (the 3 most dangerous negative narratives — why they matter electorally)
+**Demographic breakdown** (belia vs dewasa vs senior — what each group cares about)
+**Geographic hotspots** (which states show critical negative sentiment and why)
+**Strategic recommendations** (5 concrete, actionable steps for the next 30 days)
+
+Be direct, data-driven, and politically sharp. Write in English. Max 500 words.`}]})});
+    const data=await resp.json();
+    let t=data.content?.[0]?.text||'Error.';
+    t=t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+    out.innerHTML=t;
+    document.getElementById('brief-meta-body').innerHTML=`<strong>Generated:</strong> ${new Date().toLocaleString('ms-MY')}<br><strong>Entries analysed:</strong> ${POSTS.length}<br><strong>Avg sentiment score:</strong> ${avg}/100<br><strong>Negative alerts:</strong> ${neg.length} posts below score 40<br><strong>Positive entries:</strong> ${pos.length} posts above score 60<br><strong>Top keywords:</strong> ${topTopics.join(', ')}`;
+  }catch(e){out.textContent='Error: '+e.message;}
+}
+
+renderPosts();
+renderLib();
+renderDash();
+setTimeout(genBriefing,800);
+</script>
