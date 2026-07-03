@@ -48,8 +48,13 @@
     if (!message || busy) return;
 
     appendLine(message, 'user');
-    history.push({ role: 'user', content: message });
     input.value = '';
+
+    // Snapshot of PRIOR turns only — the current message is sent
+    // separately as "message", so it must not also be in "history"
+    // or the backend ends up seeing it twice and loses track of
+    // what's actually new.
+    var priorHistory = history.slice(-10);
 
     busy = true;
     if (sendBtn) sendBtn.disabled = true;
@@ -58,7 +63,7 @@
     fetch(CHAT_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: message, history: history.slice(-10) })
+      body: JSON.stringify({ message: message, history: priorHistory })
     })
       .then(function (res) {
         if (!res.ok) throw new Error('Terminal request failed: ' + res.status);
@@ -68,6 +73,11 @@
         pending.remove();
         var reply = (data && data.reply) ? data.reply : 'Maaf, tiada respons diterima.';
         appendLine(reply, 'ai');
+
+        // Only now, once both sides of the exchange are known, do
+        // they get added to history together — keeps user/assistant
+        // turns paired and in order for next time.
+        history.push({ role: 'user', content: message });
         history.push({ role: 'assistant', content: reply });
 
         if (data && data.location && window.T1ERA_MAP) {
