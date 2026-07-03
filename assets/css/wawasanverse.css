@@ -1,0 +1,227 @@
+/* ============================================================
+   WawasanVerse — page-specific styles only.
+   Header, footer, buttons, fonts and colour tokens all come
+   from assets/css/landing.css, loaded before this file.
+   ============================================================ */
+
+:root{
+  --zv-red: #d3060d;
+  --zv-ink: #14110f;
+  --zv-paper: #f6f3ee;
+  --zv-dun1: #d3060d;   /* N.01 Sungai Air Tawar marker/legend colour */
+  --zv-dun2: #14110f;   /* N.02 Sabak marker/legend colour */
+}
+
+.zv-body{ background:var(--zv-paper); }
+
+/* ---------- Map section ---------- */
+.zv-map{
+  position:relative;
+  width:100%;
+  height:min(78vh, 720px);
+  min-height:460px;
+  overflow:hidden;
+  background:#0e0c0b;
+}
+
+.zv-map__canvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+}
+
+/* Gradient scrim so the intro text stays legible over map tiles */
+.zv-map::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(10,8,7,.72) 0%, rgba(10,8,7,.32) 32%, rgba(10,8,7,0) 55%);
+  pointer-events:none;
+  z-index:1;
+}
+
+.zv-map__intro{
+  position:relative;
+  z-index:2;
+  max-width:760px;
+  padding:clamp(28px, 6vw, 64px) clamp(20px, 5vw, 64px) 0;
+  color:#fff;
+  pointer-events:none;
+}
+
+.zv-map__title{
+  font-family:"Big Shoulders Display", sans-serif;
+  font-weight:800;
+  font-size:clamp(2.2rem, 5.2vw, 3.8rem);
+  line-height:0.98;
+  letter-spacing:.01em;
+  text-transform:uppercase;
+  margin:.35em 0 .4em;
+}
+
+.zv-map__title--accent{ color:var(--zv-red); }
+
+.zv-map__lead{
+  font-family:"Inter", sans-serif;
+  font-size:clamp(.95rem, 1.4vw, 1.08rem);
+  max-width:52ch;
+  color:rgba(255,255,255,.86);
+  line-height:1.55;
+}
+
+.zv-map__legend{
+  position:absolute;
+  z-index:2;
+  left:clamp(20px, 5vw, 64px);
+  bottom:22px;
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap;
+  font-family:"Space Mono", monospace;
+  font-size:.75rem;
+  letter-spacing:.02em;
+  color:#fff;
+  background:rgba(14,12,11,.55);
+  backdrop-filter:blur(6px);
+  padding:10px 14px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.14);
+}
+
+.zv-map__legend-item{ display:inline-flex; align-items:center; gap:8px; }
+.zv-map__legend-item i{
+  width:10px; height:10px; border-radius:50%;
+  display:inline-block;
+  box-shadow:0 0 0 3px rgba(255,255,255,.12);
+}
+
+/* Mapbox default control tweaks to match the dark scrim */
+.mapboxgl-ctrl-top-right{ margin-top:14px; margin-right:14px; }
+.zv-popup .mapboxgl-popup-content{
+  font-family:"Inter", sans-serif;
+  padding:14px 16px;
+  border-radius:10px;
+}
+.zv-popup__dun{
+  font-family:"Space Mono", monospace;
+  font-size:.72rem;
+  letter-spacing:.04em;
+  color:var(--zv-red);
+  display:block;
+  margin-bottom:2px;
+}
+.zv-popup__name{ font-weight:700; display:block; margin-bottom:4px; }
+.zv-popup__note{ font-size:.8rem; color:#666; line-height:1.4; }
+
+/* ---------- Zone list / tabs section ---------- */
+.zv-zones{ padding:clamp(48px, 8vw, 96px) 0 clamp(64px, 9vw, 112px); }
+
+.zv-tabs{
+  display:flex;
+  gap:10px;
+  margin:32px 0 28px;
+  flex-wrap:wrap;
+}
+
+.zv-tab{
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+  font-family:"Inter", sans-serif;
+  background:#fff;
+  border:1.5px solid rgba(20,17,15,.14);
+  border-radius:999px;
+  padding:12px 20px;
+  cursor:pointer;
+  transition:border-color .18s ease, background .18s ease, transform .12s ease;
+}
+
+.zv-tab:hover{ border-color:rgba(211,6,13,.45); }
+
+.zv-tab.is-active{
+  background:var(--zv-ink);
+  border-color:var(--zv-ink);
+  color:#fff;
+}
+
+.zv-tab__code{
+  font-family:"Space Mono", monospace;
+  font-weight:700;
+  font-size:.82rem;
+  color:var(--zv-red);
+}
+
+.zv-tab.is-active .zv-tab__code{ color:#ff5a5f; }
+
+.zv-tab__name{ font-weight:600; font-size:.95rem; }
+
+.zv-tab__count{
+  font-family:"Space Mono", monospace;
+  font-size:.72rem;
+  opacity:.65;
+}
+
+.zv-panel.is-hidden{ display:none; }
+
+.zone-list{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:grid;
+  grid-template-columns:repeat(2, 1fr);
+  gap:2px;
+  background:rgba(20,17,15,.08);
+  border:1px solid rgba(20,17,15,.10);
+  border-radius:14px;
+  overflow:hidden;
+}
+
+.zone-list__item{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  background:#fff;
+  padding:15px 18px;
+  cursor:pointer;
+  transition:background .15s ease, padding-left .15s ease;
+}
+
+.zone-list__item:hover{
+  background:#fff6f6;
+  padding-left:22px;
+}
+
+.zone-list__item.is-active{
+  background:var(--zv-red);
+}
+.zone-list__item.is-active .zone-list__index,
+.zone-list__item.is-active .zone-list__name{ color:#fff; }
+
+.zone-list__index{
+  font-family:"Space Mono", monospace;
+  font-size:.8rem;
+  color:var(--zv-red);
+  min-width:22px;
+}
+
+.zone-list__name{
+  font-family:"Inter", sans-serif;
+  font-size:.96rem;
+  font-weight:500;
+  color:var(--zv-ink);
+}
+
+.zv-note{
+  margin-top:22px;
+  font-family:"Inter", sans-serif;
+  font-size:.82rem;
+  color:rgba(20,17,15,.6);
+  line-height:1.5;
+}
+
+@media (max-width: 720px){
+  .zone-list{ grid-template-columns:1fr; }
+  .zv-map{ height:min(88vh, 620px); }
+  .zv-map__legend{ left:20px; right:20px; }
+}
