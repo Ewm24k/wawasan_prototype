@@ -1,3 +1,5 @@
 [build]
-  command = "sed -i \"s#YOUR_MAPBOX_ACCESS_TOKEN#$MAPBOX_TOKEN#g\" assets/js/wawasanverse.js"
   publish = "."
+
+[functions]
+  directory = "netlify/functions"
