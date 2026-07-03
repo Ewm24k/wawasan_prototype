@@ -81,6 +81,11 @@
         history.push({ role: 'assistant', content: reply });
 
         if (data && data.location && window.T1ERA_MAP) {
+          // Real coordinates get printed once the map's own geocoding
+          // finishes — see the 'zv:location-result' listener below.
+          // We never let the AI state numbers itself (it can't know
+          // them accurately); the actual search result is the only
+          // source of truth for coordinates.
           window.T1ERA_MAP.flyToPlace(data.location, data.dun || null);
         }
       })
@@ -93,5 +98,26 @@
         if (sendBtn) sendBtn.disabled = false;
         input.focus();
       });
+  });
+
+  // The map (wawasanverse.js) broadcasts the outcome of every location
+  // lookup with a "source" tag. We only care about ones triggered by
+  // this terminal's own AI replies — list clicks / search bar lookups
+  // stay silent here.
+  window.addEventListener('zv:location-result', function (e) {
+    var d = e.detail;
+    if (!d || d.source !== 'ai') return;
+
+    if (d.matched) {
+      appendLine(
+        '📍 ' + d.name + ' — Koordinat: ' + d.lat.toFixed(5) + ', ' + d.lng.toFixed(5),
+        'ai'
+      );
+    } else {
+      appendLine(
+        '📍 Tiada padanan tepat untuk "' + d.name + '" — peta ditunjukkan pada anggaran kawasan berkenaan.',
+        'ai'
+      );
+    }
   });
 })();
