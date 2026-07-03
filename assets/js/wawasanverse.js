@@ -197,4 +197,15 @@
     });
   });
 
+  // ---- 6. Public hook for other scripts (e.g. the T1ERA terminal) ------
+  // Intentionally tiny: one function, no shared state exposed. Lets
+  // assets/js/t1era-terminal.js ask the map to fly to a place name
+  // without this file and that file being merged together.
+  window.T1ERA_MAP = {
+    flyToPlace: function (placeName, dunKey) {
+      if (!placeName) return;
+      geocodeAndFly(placeName, dunKey || 'dun1', null);
+    }
+  };
+
 })();
