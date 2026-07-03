@@ -1,0 +1,148 @@
+/* ============================================================
+   T1ERA Terminal — standalone styles.
+   Deliberately kept in its own file, separate from
+   wawasanverse.css, per project structure.
+   ============================================================ */
+
+:root{
+  --t1-bg: #0c0a09;
+  --t1-line: rgba(255,255,255,.10);
+  --t1-red: #d3060d;
+  --t1-green: #5ee39a;
+}
+
+.t1era{ padding:0 0 clamp(56px, 8vw, 96px); }
+
+.t1era__toggle{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  background:var(--t1-bg);
+  color:#fff;
+  border:1px solid var(--t1-line);
+  border-radius:14px;
+  padding:18px 22px;
+  cursor:pointer;
+  font-family:"Inter", sans-serif;
+  text-align:left;
+  transition:border-color .18s ease;
+}
+
+.t1era__toggle:hover{ border-color:rgba(211,6,13,.5); }
+
+.t1era__toggle-dot{
+  width:9px; height:9px; border-radius:50%;
+  background:var(--t1-green);
+  box-shadow:0 0 0 4px rgba(94,227,154,.18);
+  flex:none;
+}
+
+.t1era__toggle-label{
+  font-family:"Space Mono", monospace;
+  font-weight:700;
+  font-size:.95rem;
+  letter-spacing:.02em;
+}
+
+.t1era__toggle-hint{
+  font-size:.82rem;
+  color:rgba(255,255,255,.55);
+  margin-left:2px;
+  flex:1;
+}
+
+.t1era__toggle-chevron{
+  transition:transform .2s ease;
+  flex:none;
+}
+
+.t1era__toggle[aria-expanded="true"] .t1era__toggle-chevron{
+  transform:rotate(180deg);
+}
+
+.t1era__panel{
+  margin-top:10px;
+  background:var(--t1-bg);
+  border:1px solid var(--t1-line);
+  border-radius:14px;
+  overflow:hidden;
+}
+
+.t1era__log{
+  max-height:340px;
+  overflow-y:auto;
+  padding:18px 20px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  font-family:"Space Mono", monospace;
+  font-size:.85rem;
+  line-height:1.55;
+}
+
+.t1era__line{ margin:0; color:rgba(255,255,255,.85); white-space:pre-wrap; }
+.t1era__line--sys{ color:rgba(255,255,255,.45); }
+.t1era__line--user::before{ content:"› "; color:var(--t1-red); }
+.t1era__line--ai::before{ content:"T1ERA :: "; color:var(--t1-green); }
+.t1era__line--error{ color:#ff8a8a; }
+.t1era__line--pending{ color:rgba(255,255,255,.4); }
+.t1era__line--pending::after{
+  content:"";
+  display:inline-block;
+  width:6px; height:6px;
+  margin-left:6px;
+  border-radius:50%;
+  background:currentColor;
+  animation:t1-pulse 1s ease-in-out infinite;
+}
+
+@keyframes t1-pulse{ 0%,100%{ opacity:.25; } 50%{ opacity:1; } }
+
+.t1era__form{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  border-top:1px solid var(--t1-line);
+  padding:14px 20px;
+}
+
+.t1era__prompt{
+  font-family:"Space Mono", monospace;
+  font-size:.78rem;
+  color:var(--t1-green);
+  flex:none;
+}
+
+.t1era__input{
+  flex:1;
+  background:transparent;
+  border:none;
+  outline:none;
+  color:#fff;
+  font-family:"Space Mono", monospace;
+  font-size:.88rem;
+}
+
+.t1era__input::placeholder{ color:rgba(255,255,255,.35); }
+
+.t1era__send{
+  font-family:"Inter", sans-serif;
+  font-weight:600;
+  font-size:.8rem;
+  color:#fff;
+  background:var(--t1-red);
+  border:none;
+  border-radius:8px;
+  padding:9px 16px;
+  cursor:pointer;
+  transition:opacity .15s ease;
+}
+
+.t1era__send:hover{ opacity:.88; }
+.t1era__send:disabled{ opacity:.4; cursor:not-allowed; }
+
+@media (max-width: 560px){
+  .t1era__toggle-hint{ display:none; }
+  .t1era__prompt{ display:none; }
+}
