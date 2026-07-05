@@ -13,7 +13,7 @@
   // just drop files into assets/images/carousel/ and update the path.
   var CAROUSEL_SLIDES = [
     {
-      image: 'assets/images/carousel/carousel-1.jpg',
+      image: 'assets/images/carousel/ChatGPT Image Jun 30, 2026, 03_03_25 PM (1).png',
       title: 'SERTAI PERJUANGAN KAMI',
       text: 'Jadi sebahagian daripada suara rakyat Sabak Bernam'
     },
