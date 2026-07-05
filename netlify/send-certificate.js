@@ -94,6 +94,11 @@ async function buildCertificatePdf(data) {
   );
   centered('dengan No. Keahlian: ' + data.memberId, fontBold, 13, height - 368, RED);
 
+  centered(
+    'Terima kasih, ' + String(data.fullName || '') + ', atas komitmen anda bersama perjuangan kami.',
+    fontItalic, 10.5, height - 392, INK
+  );
+
   // Signature block (bottom right) — printed italic name, see note
   // at top of file about swapping in a real signature image later.
   const sigX = width - 260;
@@ -120,15 +125,48 @@ async function buildCertificatePdf(data) {
 }
 
 function buildEmailHtml(data) {
+  var statusLabel = JOIN_AS_LABEL[data.joinAs] || 'Ahli';
+  var rows = [
+    ['Nama Penuh', data.fullName],
+    ['No. Kad Pengenalan', data.icNumber],
+    ['No. Telefon', data.phone],
+    ['Mukim / Kawasan', data.mukim],
+    ['Status Pendaftaran', statusLabel],
+    ['No. Keahlian', data.memberId]
+  ].filter(function (r) { return r[1]; });
+
+  var rowsHtml = rows.map(function (r) {
+    return (
+      '<tr>' +
+        '<td style="padding:6px 12px 6px 0;color:#4a4f58;font-size:0.88rem;white-space:nowrap;">' + escapeHtml(r[0]) + '</td>' +
+        '<td style="padding:6px 0;color:#16181c;font-size:0.9rem;font-weight:600;">' + escapeHtml(r[1]) + '</td>' +
+      '</tr>'
+    );
+  }).join('');
+
   return (
-    '<div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto;color:#16181c;">' +
-      '<h2 style="color:#0a2a5e;margin:0 0 12px;">Terima kasih, ' + escapeHtml(data.fullName) + '!</h2>' +
-      '<p>Pendaftaran anda dengan Parti Wawasan Negara, Cawangan Sabak Bernam, telah berjaya diterima.</p>' +
-      '<p><strong>No. Keahlian:</strong> ' + escapeHtml(data.memberId) + '</p>' +
-      '<p>Sijil keahlian rasmi anda disertakan sebagai lampiran PDF pada e-mel ini — boleh dimuat turun dan disimpan.</p>' +
-      '<p style="margin-top:24px;color:#4a4f58;font-size:0.85rem;">' +
-        'Parti Wawasan Negara, Cawangan Sabak Bernam<br>E-mel ini dijana secara automatik, tidak perlu dibalas.' +
-      '</p>' +
+    '<div style="font-family:Arial,sans-serif;max-width:540px;margin:0 auto;color:#16181c;line-height:1.6;">' +
+      '<div style="background:#0a2a5e;padding:22px 26px;border-radius:10px 10px 0 0;">' +
+        '<p style="margin:0;color:#c9a227;font-size:0.72rem;letter-spacing:0.12em;font-weight:700;">PARTI WAWASAN NEGARA</p>' +
+        '<p style="margin:2px 0 0;color:#fff;font-size:0.95rem;font-weight:700;">Cawangan Sabak Bernam</p>' +
+      '</div>' +
+      '<div style="border:1px solid #e4e2dc;border-top:none;border-radius:0 0 10px 10px;padding:26px;">' +
+        '<h2 style="color:#0a2a5e;margin:0 0 6px;font-size:1.25rem;">Selamat Bergabung, ' + escapeHtml(data.fullName) + '!</h2>' +
+        '<p style="margin:0 0 18px;color:#4a4f58;">' +
+          'Bagi pihak seluruh keluarga besar Parti Wawasan Negara — di peringkat Cawangan Sabak Bernam mahupun ' +
+          'peringkat Parti Wawasan Negara pusat — kami mengucapkan setinggi-tinggi terima kasih dan tahniah kerana ' +
+          'sudi menyertai perjuangan kami untuk rakyat Sabak Bernam.' +
+        '</p>' +
+        '<p style="margin:0 0 16px;color:#16181c;">Pendaftaran anda telah <strong style="color:#0a7d3c;">berjaya disahkan</strong>. Berikut ringkasan maklumat pendaftaran anda:</p>' +
+        '<table style="width:100%;border-collapse:collapse;margin:0 0 20px;background:#f7f7f5;border-radius:8px;padding:4px;">' +
+          '<tbody>' + rowsHtml + '</tbody>' +
+        '</table>' +
+        '<p style="margin:0 0 6px;">Sijil keahlian rasmi anda disertakan sebagai lampiran PDF pada e-mel ini — sila muat turun dan simpan untuk rujukan anda.</p>' +
+        '<p style="margin:18px 0 0;color:#4a4f58;">Sekali lagi, terima kasih kerana menjadi sebahagian daripada perjuangan ini. Suara anda amat bermakna bagi kami.</p>' +
+        '<p style="margin:22px 0 0;font-weight:700;color:#0a2a5e;">Salam Perjuangan,<br>Parti Wawasan Negara, Cawangan Sabak Bernam</p>' +
+        '<hr style="border:none;border-top:1px solid #e4e2dc;margin:22px 0 12px;">' +
+        '<p style="margin:0;color:#8a8d93;font-size:0.78rem;">E-mel ini dijana secara automatik oleh sistem pendaftaran. Tidak perlu dibalas.</p>' +
+      '</div>' +
     '</div>'
   );
 }
@@ -154,6 +192,8 @@ exports.handler = async function (event) {
   const email = typeof payload.email === 'string' ? payload.email.trim() : '';
   const fullName = typeof payload.fullName === 'string' ? payload.fullName.trim() : '';
   const icNumber = typeof payload.icNumber === 'string' ? payload.icNumber.trim() : '';
+  const phone = typeof payload.phone === 'string' ? payload.phone.trim() : '';
+  const mukim = typeof payload.mukim === 'string' ? payload.mukim.trim() : '';
   const memberId = typeof payload.memberId === 'string' ? payload.memberId.trim() : '';
   const joinAs = typeof payload.joinAs === 'string' ? payload.joinAs.trim() : 'ahli';
 
@@ -196,7 +236,7 @@ exports.handler = async function (event) {
         from: FROM_EMAIL,
         to: [email],
         subject: 'Sijil Keahlian Anda — Parti Wawasan Negara, Sabak Bernam',
-        html: buildEmailHtml({ fullName, memberId }),
+        html: buildEmailHtml({ fullName, memberId, icNumber, phone, mukim, joinAs }),
         attachments: [
           { filename: 'Sijil-Keahlian-' + memberId + '.pdf', content: pdfBase64 }
         ]
