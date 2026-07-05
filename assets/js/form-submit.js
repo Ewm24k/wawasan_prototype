@@ -277,6 +277,35 @@ async function handleSubmit(e) {
   }
 
   resultEl.textContent = "Berjaya! ID Keahlian anda: " + memberId;
+
+  // Fire the certificate email in the background — don't make the
+  // visitor wait for it, and don't let it block the popup/reload.
+  // keepalive:true matters here specifically because the page is
+  // about to reload in under 2 seconds (below); without it, the
+  // browser can abort this request mid-flight when the page unloads.
+  if (payload.email) {
+    resultEl.textContent += " Sijil sedang dihantar ke e-mel anda.";
+    fetch("/.netlify/functions/send-certificate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      keepalive: true,
+      body: JSON.stringify({
+        email: payload.email,
+        fullName: payload.fullName,
+        icNumber: payload.icNumber,
+        phone: payload.phone,
+        mukim: payload.mukim,
+        memberId: memberId,
+        joinAs: payload.joinAs,
+      }),
+    }).catch(function () {
+      // Silent by design: the registration itself already succeeded
+      // and the popup is about to close. A failed certificate email
+      // isn't worth blocking or alarming the visitor over here — if
+      // this needs surfacing later, log to Firestore/analytics instead.
+    });
+  }
+
   form.reset();
 
   setTimeout(function () {
