@@ -132,6 +132,36 @@
   </div>
 </main>
 
+<!-- ============ PROCESSING POPUP (shown on submit) ============ -->
+<div class="pe-process" id="processPopup" aria-hidden="true" role="alertdialog" aria-modal="true" aria-labelledby="processTitle">
+  <div class="pe-process__backdrop"></div>
+  <div class="pe-process__panel">
+    <h2 class="pe-process__title" id="processTitle">Menghantar Borang...</h2>
+    <p class="pe-process__sub">Sila tunggu, jangan tutup halaman ini.</p>
+
+    <ul class="pe-process__list" id="processList">
+      <li class="pe-process__item" data-step="save">
+        <span class="pe-step-icon" aria-hidden="true">
+          <svg class="pe-step-icon__spinner" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke-width="3"/></svg>
+          <svg class="pe-step-icon__tick" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="pe-process__label">Menyimpan maklumat borang</span>
+      </li>
+      <li class="pe-process__item" data-step="id">
+        <span class="pe-step-icon" aria-hidden="true">
+          <svg class="pe-step-icon__spinner" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke-width="3"/></svg>
+          <svg class="pe-step-icon__tick" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="pe-process__label">Menjana ID keahlian</span>
+      </li>
+    </ul>
+
+    <p class="pe-process__result" id="processResult"></p>
+    <p class="pe-process__error" id="processError" hidden></p>
+    <button class="pe-process__retry" id="processRetry" hidden>Cuba Semula</button>
+  </div>
+</div>
+
 <!-- ============ FOOTER ============ -->
 <footer class="form-footer">
   <div class="form-footer__inner">
@@ -142,5 +172,7 @@
 </footer>
 
 <script src="assets/js/form.js"></script>
+<script type="module" src="assets/js/firebase-config.js"></script>
+<script type="module" src="assets/js/form-submit.js"></script>
 </body>
 </html>
