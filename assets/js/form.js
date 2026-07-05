@@ -41,31 +41,31 @@
      just point it at the new image. */
   var TESTIMONI = [
     {
-      avatar: 'assets/images/testimoni/avatar-1.png',
+      avatar: 'assets/images/testimoni/avatar2.png',
       name: 'Ahmad Zulkifli',
       role: 'AJK Cawangan',
       quote: 'Wawasan Negara bawa perubahan sebenar untuk peniaga kecil macam saya. Bantuan bukan sekadar janji.'
     },
     {
-      avatar: 'assets/images/testimoni/avatar-2.png',
+      avatar: 'assets/images/testimoni/avatar1.png',
       name: 'Siti Nur Aisyah',
       role: 'Ahli',
       quote: 'Saya rasa didengari. AJK sentiasa turun padang dan dengar masalah kampung kami satu persatu.'
     },
     {
-      avatar: 'assets/images/testimoni/avatar-3.png',
+      avatar: 'assets/images/testimoni/avatar5.png',
       name: 'Ravi a/l Muthu',
       role: 'Penyokong',
       quote: 'Program belia mereka bagi anak saya peluang belajar kemahiran baru dan harapan untuk masa depan.'
     },
     {
-      avatar: 'assets/images/testimoni/avatar-4.png',
+      avatar: 'assets/images/testimoni/avatar3.png',
       name: 'Fatimah Zahra',
       role: 'Ahli',
       quote: 'Perjuangan mereka jelas — bukan janji kosong, tapi kerja betul-betul untuk rakyat Sabak Bernam.'
     },
     {
-      avatar: 'assets/images/testimoni/avatar-5.png',
+      avatar: 'assets/images/testimoni/avatar4.png',
       name: 'Kamarul Hisyam',
       role: 'AJK Cawangan',
       quote: 'Bersama Wawasan Negara, saya nampak harapan baru dan hala tuju yang jelas untuk kampung kita.'
