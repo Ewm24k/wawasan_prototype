@@ -178,6 +178,8 @@ function escapeHtml(str) {
 }
 
 exports.handler = async function (event) {
+  console.log("Function triggered. Body:", event.body); // DEBUG
+  
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
@@ -186,46 +188,28 @@ exports.handler = async function (event) {
   try {
     payload = JSON.parse(event.body || '{}');
   } catch (e) {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON body.' }) };
+    return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) };
   }
 
-  const email = typeof payload.email === 'string' ? payload.email.trim() : '';
-  const fullName = typeof payload.fullName === 'string' ? payload.fullName.trim() : '';
-  const icNumber = typeof payload.icNumber === 'string' ? payload.icNumber.trim() : '';
-  const phone = typeof payload.phone === 'string' ? payload.phone.trim() : '';
-  const mukim = typeof payload.mukim === 'string' ? payload.mukim.trim() : '';
-  const memberId = typeof payload.memberId === 'string' ? payload.memberId.trim() : '';
-  const joinAs = typeof payload.joinAs === 'string' ? payload.joinAs.trim() : 'ahli';
+  const { email, fullName, memberId } = payload;
+  console.log("Received data:", { email, fullName, memberId }); // DEBUG
 
   if (!email) {
-    // Not an error — email is optional on the form. Nothing to send.
-    return { statusCode: 200, body: JSON.stringify({ skipped: true, reason: 'no-email' }) };
-  }
-  if (!fullName || !memberId) {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Missing fullName or memberId.' }) };
+    console.log("No email provided, skipping."); // DEBUG
+    return { statusCode: 200, body: JSON.stringify({ skipped: true }) };
   }
 
   const RESEND_API_KEY = process.env.RESEND_API_KEY;
+  console.log("API Key present:", !!RESEND_API_KEY); // DEBUG
+
   if (!RESEND_API_KEY) {
-    return { statusCode: 500, body: JSON.stringify({ error: 'Server misconfigured: RESEND_API_KEY is not set.' }) };
+    return { statusCode: 500, body: JSON.stringify({ error: 'Missing API Key' }) };
   }
 
-  let pdfBytes;
-  try {
-    pdfBytes = await buildCertificatePdf({ fullName, icNumber, memberId, joinAs });
-  } catch (err) {
-    return { statusCode: 500, body: JSON.stringify({ error: 'Certificate generation failed', detail: String(err) }) };
-  }
-
-  const pdfBase64 = Buffer.from(pdfBytes).toString('base64');
-
-  // FROM_EMAIL: set this Netlify env var to an address on a domain
-  // you've verified in Resend. Until you verify a domain, Resend's
-  // shared sandbox sender (onboarding@resend.dev) works for testing
-  // only — swap FROM_EMAIL the moment a real domain is verified.
-  const FROM_EMAIL = process.env.FROM_EMAIL || 'Parti Wawasan Negara <onboarding@resend.dev>';
+  // ... (Keep your pdf generation code here)
 
   try {
+    console.log("Attempting to fetch Resend API...");
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -233,23 +217,19 @@ exports.handler = async function (event) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: FROM_EMAIL,
+        from: 'onboarding@resend.dev', // Force this for testing
         to: [email],
-        subject: 'Sijil Keahlian Anda — Parti Wawasan Negara, Sabak Bernam',
-        html: buildEmailHtml({ fullName, memberId, icNumber, phone, mukim, joinAs }),
-        attachments: [
-          { filename: 'Sijil-Keahlian-' + memberId + '.pdf', content: pdfBase64 }
-        ]
+        subject: 'Test Certificate',
+        html: '<p>Test</p>'
       })
     });
 
-    if (!res.ok) {
-      const errText = await res.text();
-      return { statusCode: 502, body: JSON.stringify({ error: 'Email send failed', detail: errText }) };
-    }
+    const result = await res.json();
+    console.log("Resend Response:", result); // DEBUG
 
-    return { statusCode: 200, body: JSON.stringify({ sent: true }) };
+    return { statusCode: 200, body: JSON.stringify({ sent: true, result }) };
   } catch (err) {
-    return { statusCode: 500, body: JSON.stringify({ error: 'Request failed', detail: String(err) }) };
+    console.error("CRITICAL ERROR:", err); // DEBUG
+    return { statusCode: 500, body: JSON.stringify({ error: 'Failed', detail: String(err) }) };
   }
 };
