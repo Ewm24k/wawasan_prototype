@@ -18,7 +18,7 @@
       text: 'Jadi sebahagian daripada suara rakyat Sabak Bernam'
     },
     {
-      image: 'assets/images/carousel/carousel-2.jpg',
+      image: 'assets/images/carousel/ChatGPT Image Jun 30, 2026, 03_03_33 PM.png',
       title: 'BERSAMA MEMBINA SABAK BERNAM',
       text: 'Pembangunan yang saksama untuk semua mukim'
     },
