@@ -67,6 +67,7 @@ var popup = document.getElementById("processPopup");
 var resultEl = document.getElementById("processResult");
 var errorEl = document.getElementById("processError");
 var retryBtn = document.getElementById("processRetry");
+var okBtn = document.getElementById("processOk");
 var stepItems = {};
 
 if (popup) {
@@ -85,6 +86,7 @@ function openPopup() {
   resultEl.textContent = "";
   errorEl.hidden = true;
   retryBtn.hidden = true;
+  if (okBtn) okBtn.hidden = true;
   resetSteps();
   popup.classList.add("is-open");
   popup.setAttribute("aria-hidden", "false");
@@ -260,6 +262,7 @@ async function handleSubmit(e) {
     message: form.message.value.trim(),
     consent: form.consent.checked,
     memberId: memberId,
+    tier: "ahli", // AJK/VIP is an admin-assigned designation, set later from the dashboard
     submittedAt: serverTimestamp(),
   };
 
@@ -278,11 +281,11 @@ async function handleSubmit(e) {
 
   resultEl.textContent = "Berjaya! ID Keahlian anda: " + memberId;
 
-  // Fire the certificate email in the background — don't make the
-  // visitor wait for it, and don't let it block the popup/reload.
-  // keepalive:true matters here specifically because the page is
-  // about to reload in under 2 seconds (below); without it, the
-  // browser can abort this request mid-flight when the page unloads.
+  // Certificate email fetch is kept (harmless to leave firing in the
+  // background) — not discussing/changing that part right now per
+  // your last message. keepalive still makes sense here since the
+  // popup no longer auto-closes, but the visitor could still click
+  // OK and navigate away before this finishes.
   if (payload.email) {
     resultEl.textContent += " Sijil sedang dihantar ke e-mel anda.";
     fetch("/.netlify/functions/send-certificate", {
@@ -299,20 +302,28 @@ async function handleSubmit(e) {
         joinAs: payload.joinAs,
       }),
     }).catch(function () {
-      // Silent by design: the registration itself already succeeded
-      // and the popup is about to close. A failed certificate email
-      // isn't worth blocking or alarming the visitor over here — if
-      // this needs surfacing later, log to Firestore/analytics instead.
+      // Silent by design — see note above.
     });
   }
 
   form.reset();
 
-  setTimeout(function () {
-    closePopup();
-    if (isModal) notifyParentClose();
-    window.location.reload();
-  }, 1800);
+  // Popup now stays open on success until the visitor clicks OK —
+  // no more setTimeout auto-close/auto-reload. The member ID stays
+  // on screen for as long as they need to read/copy it.
+  if (okBtn) {
+    okBtn.hidden = false;
+    okBtn.focus();
+    okBtn.onclick = function () {
+      closePopup();
+      if (isModal) notifyParentClose();
+      window.location.reload();
+    };
+  } else {
+    // Fallback if the OK button markup isn't present for some reason —
+    // still don't auto-close silently; at least close on backdrop-free
+    // manual reload isn't assumed here, so just leave the popup open.
+  }
 }
 
 if (retryBtn) {
