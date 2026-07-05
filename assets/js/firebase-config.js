@@ -19,31 +19,34 @@
    (step 6), which control who can read/write what.
    ============================================================ */
 
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // Your project's config (from Firebase Console → Project settings → General).
 export const FIREBASE_CONFIG = {
-  apiKey: 'AIzaSyByJ0nV6JBflxmGWNdYRJniPjhZuM0SU2Q',
-  authDomain: 'wawasandatabase.firebaseapp.com',
-  projectId: 'wawasandatabase',
-  storageBucket: 'wawasandatabase.firebasestorage.app',
-  messagingSenderId: '396621564207',
-  appId: '1:396621564207:web:81d534d5a72ff82dee39da',
-  measurementId: 'G-9KBE0FYVGJ'
+  apiKey: "AIzaSyByJ0nV6JBflxmGWNdYRJniPjhZuM0SU2Q",
+  authDomain: "wawasandatabase.firebaseapp.com",
+  projectId: "wawasandatabase",
+  storageBucket: "wawasandatabase.firebasestorage.app",
+  messagingSenderId: "396621564207",
+  appId: "1:396621564207:web:81d534d5a72ff82dee39da",
+  measurementId: "G-9KBE0FYVGJ",
 };
 
-export const isFirebaseConfigured = FIREBASE_CONFIG.apiKey !== 'REPLACE_ME';
+export const isFirebaseConfigured = FIREBASE_CONFIG.apiKey !== "REPLACE_ME";
 
 export const firebaseApp = initializeApp(FIREBASE_CONFIG);
 export const db = getFirestore(firebaseApp);
+export const auth = getAuth(firebaseApp);
 
 // Analytics is optional and unrelated to the form's save/ID-generation
 // flow — wrapped in try/catch so an ad-blocker or unsupported browser
 // environment can never break form submission.
 export var analytics = null;
 try {
-  var { getAnalytics, isSupported } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js');
+  var { getAnalytics, isSupported } =
+    await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js");
   if (await isSupported()) {
     analytics = getAnalytics(firebaseApp);
   }
