@@ -116,15 +116,47 @@ function notifyParentClose() {
 
 /* ---------- Main submit flow ---------- */
 var form = document.getElementById('joinForm');
+var formStatus = document.getElementById('formStatus');
+
+/* Deliberately NOT using form.checkValidity()/reportValidity() here.
+   On mobile Chrome, a field filled via autofill/autocomplete can
+   visually show text while the browser's own native validity check
+   still reports it as empty — which silently blocks submission with
+   no console error (exactly this bug). Reading .value directly is
+   more reliable and lets us show our own clear message instead of
+   an OS-level tooltip that renders inconsistently on mobile anyway. */
+function findFirstInvalidField() {
+  if (!form.fullName.value.trim()) return { field: form.fullName, msg: 'Sila isikan Nama Penuh.' };
+  if (!form.icNumber.value.trim()) return { field: form.icNumber, msg: 'Sila isikan No. Kad Pengenalan.' };
+  if (!form.phone.value.trim()) return { field: form.phone, msg: 'Sila isikan No. Telefon.' };
+  if (!form.consent.checked) return { field: form.consent, msg: 'Sila bersetuju dengan penggunaan maklumat sebelum menghantar.' };
+  return null;
+}
+
+function showFieldError(msg) {
+  if (formStatus) {
+    formStatus.textContent = msg;
+    formStatus.className = 'form-status is-error';
+  }
+}
+function clearFieldError() {
+  if (formStatus) {
+    formStatus.textContent = '';
+    formStatus.className = 'form-status';
+  }
+}
 
 async function handleSubmit(e) {
   e.preventDefault();
   if (!form) return;
 
-  if (!form.checkValidity()) {
-    form.reportValidity();
+  var invalid = findFirstInvalidField();
+  if (invalid) {
+    showFieldError(invalid.msg);
+    invalid.field.focus();
     return;
   }
+  clearFieldError();
 
   if (!isFirebaseConfigured) {
     openPopup();
@@ -190,4 +222,6 @@ if (retryBtn) {
 
 if (form) {
   form.addEventListener('submit', handleSubmit);
+  form.addEventListener('input', clearFieldError);
+  form.addEventListener('change', clearFieldError);
 }
